@@ -7,9 +7,7 @@ public class run {
 
     private static int[] db = new int[77], dw = new int[77], t = new int[17];
 
-    public static boolean show = true;
-
-    public static long p = 0,dif = 0;
+    static long p = 0,dif = 0;
 
     public static void main(String[] agrs) {
         System.out.println("Очень легкий:");
@@ -52,7 +50,7 @@ public class run {
         run.run_application();
     }
 
-    public static void run_application()
+    private static void run_application()
     {
         System.out.println("Введите номер столбца:");
         Scanner scanner = new Scanner(System.in);
@@ -88,9 +86,11 @@ public class run {
             a = k[0];
             System.out.println();
             auth(a, 1);
-            if (show) {
+
+            //Показ
+            if (true) {
                 System.out.println("// Проанализировано " + p + " позиций, итог:");
-                System.out.println("// Текущая оценка: " + ii_run.analyz(db, dw, t));
+                System.out.println("// Текущая оценка: " + ii_run.analyze(db, dw, t));
                 System.out.print("// Оценка: " + k[1] + ", при возможных ходах:  ");
                 if (k[2]!=0)
                     if (k[3] == 0)
@@ -113,7 +113,7 @@ public class run {
         if (ii_run.win(db,dw)==-1)
         {
             System.out.println("Компьютер Выиграл!");
-            int prost2o = scanner.nextInt();
+            int prosto = scanner.nextInt();
             System.exit(0);
         }
 
@@ -121,10 +121,10 @@ public class run {
         run_application();
     }
 
-    public static void auth(int n,int color)
+    private static void auth(int n,int color)
     {
 
-        int x = 0, y = 0, z;
+        int x, y = 0, z;
         x=(n-1)%4+1;
         if ((n >= 1) & (n <= 4))
             y = 4;
