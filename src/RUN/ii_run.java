@@ -1,308 +1,666 @@
 package RUN;
 
+import static RUN.run.p;
 
-import java.util.Scanner;
+ class ii_run {
 
-public class run {
+    static int engine(int[] db,int[] dw,int[] t)
+    {
+        //Копирование массивов
+        int[] db1 = new int[77];
+        System.arraycopy(db,0,db1,0,77);
+        int[] dw1 = new int[77];
+        System.arraycopy(dw,0,dw1,0,77);
+        int[] t1 = new int[77];
+        System.arraycopy(t,0,t1,0,17);
+        //
 
-    private static int[] db = new int[77], dw = new int[77], t = new int[17];
+        //Атака 4 в ряд
+        int a=0;
+        int b =secondary.attack(db1,dw1);
+        if (b!=0)
+            a = b;
 
-    static long p = 0,dif = 0;
+        //Защита 4 в ряд
+        if (a==0) {
+            b = secondary.attack(dw1, db1);
+            if (b != 0)
+                a = b;
+        }
 
-    public static void main(String[] agrs) {
-        System.out.println("Очень легкий:");
-        System.out.println("    Сложность для начинающих, которая поможет вам понять основные принципы игры.");
-        System.out.println("    Использует только очень слабый движок.");
-        System.out.println();
-        System.out.println("Легкий");
-        System.out.println("    Если вы поняли основные принципы, попробуйте этот тип сложности.");
-        System.out.println("    Поначалу будет сложно, но после слишком легко.");
-        System.out.println("    Использует только основные возможности движка.");
-        System.out.println();
-        System.out.println("Средний");
-        System.out.println("    Выработав свою тактику, попробуйте эту сложность.");
-        System.out.println("    Использует весь движок.");
-        System.out.println();
-        System.out.println("Сложный");
-        System.out.println("    Приготовьтесь к тяжкому испытанию! Для победы");
-        System.out.println("    нужно будет не слабо потренироваться!");
-        System.out.println("    Начинает использовать анализ позиций, полностью использует");
-        System.out.println("    движок и наполовину древо ходов.");
-        System.out.println("    Анализирует примерно 5000 позиций за ход.");
-        System.out.println();
-        System.out.println("Максимальный");
-        System.out.println("    Чтобы одолеть максимальную сложность, нужно иметь");
-        System.out.println("    стратегическое мышление, огромную внимательность");
-        System.out.println("    и быть очень сосредоточенным!");
-        System.out.println("    Использует все возможности по максимуму:");
-        System.out.println("    древо ходов, анализ, движок.");
-        System.out.println("    Анализирует примерно 60000 позиций за ход!");
-        System.out.println();
-        System.out.println("Выберете уровень сложности:");
-        System.out.println("1) Очень легкий");
-        System.out.println("2) Легкий");
-        System.out.println("3) Средний");
-        System.out.println("4) Сложный");
-        System.out.println("5) Максимальный");
-        Scanner scanner = new Scanner(System.in);
-        dif = scanner.nextInt();
-        System.out.println();
-        run.run_application();
+        // Создание узлов
+        if (a==0) {
+            b = secondary.lip_a(db1, dw1, t1);
+            if (b != 0)
+                a = b;
+        }
+
+        // Защита от узлов
+        if (a==0) {
+            b = secondary.lip_d(db1, dw1, t1);
+            if (b != 0)
+                a = b;
+        }
+
+        // Создание двойных линий
+        if (a==0) {
+            b = secondary.double_(db1, dw1, t1);
+            if (b != 0)
+                a = b;
+        }
+
+        // Защита от двойных линий
+        if (a==0) {
+            b = secondary.double_(dw1, db1, t1);
+            if (b != 0)
+                a = b;
+        }
+
+
+        // Атака на 3 недостижимых в ряд
+        if (a==0) {
+            b = secondary.d3_a(db1, dw1, t1);
+            if (b != 0)
+                a = b;
+        }
+
+        // Защита от 3 недостижимых в ряд
+        if (a==0) {
+            b = secondary.d3_d(db1, dw1, t1);
+            if (b != 0)
+                a = b;
+        }
+
+        // Дебют
+        if (a==0) {
+            b = secondary.debut(t1);
+            if (b != 0)
+                a = b;
+        }
+
+        // Захват 2 диагоналей
+        if (a==0) {
+            b = secondary.dc2(db1, dw1, t1);
+            if (b != 0)
+                a = b;
+        }
+
+        // Захват 1 диагонали
+        if (a==0) {
+            b = secondary.dc1(db1, dw1, t1);
+            if (b != 0)
+                a = b;
+        }
+
+        // Защита от 3 в ряд
+        if (a==0) {
+            b = secondary.def_3(db1, dw1, t1);
+            if (b != 0)
+                a = b;
+        }
+
+        // Ранддом
+        if (a==0) {
+            b = secondary.rand(db1, dw1, t1);
+            if (b != 0)
+                a = b;
+        }
+
+        return a;
     }
 
-    private static void run_application()
+    static int analyze(int[] db,int[] dw,int[] t)
     {
-        System.out.println("Введите номер столбца:");
-        Scanner scanner = new Scanner(System.in);
-        int n = scanner.nextInt();
-        if ((0<n) & (n<17)) {
-            auth(n, 0);
-
-            if (ii_run.win(db, dw) == 1) {
-                System.out.println("Вы Выиграли!");
-                int prosto = scanner.nextInt();
-                System.exit(0);
+        //Копирование массивов
+        int[] db1 = new int[77];
+        System.arraycopy(db, 0, db1, 0, 77);
+        int[] dw1 = new int[77];
+        System.arraycopy(dw, 0, dw1, 0, 77);
+        int[] t1 = new int[77];
+        System.arraycopy(t, 0, t1, 0, 17);
+        //
+        // Black
+        int a=0,b=0,anl;
+        for (int k=1;k<77;k++)
+            if ((db1[k]==3) & (dw1[k]==0))
+                b=b+1;
+        for (int j = 1; j < 17; j++)
+            if (t1[j]!=4)
+            {
+                int[] dbx = new int[77];
+                System.arraycopy(secondary.auth_d(db1, t1, j), 0, dbx, 0, 77);
+                for (int k = 1; k < 77; k++)
+                    if (dbx[k] == 4)
+                        a =a+1;
             }
-        }
-        int a = 0;
-        if (dif==1)
-        {
-            a = ii_run.engine_1(db,dw,t);
-            auth(a, 1);
-        }
-        if (dif==2)
-        {
-            a = ii_run.engine_2(db,dw,t);
-            auth(a, 1);
-        }
-        if (dif==3)
-        {
-            a = ii_run.engine(db,dw,t);
-            auth(a, 1);
-        }
-        if (dif>3) {
-            System.out.println("Идет анализ ходов ...");
-            int[] k = dif==5 ? ii_run.tree(db, dw, t): ii_run.tree_2(db, dw, t);
-            a = k[0];
-            System.out.println();
-            auth(a, 1);
+        anl=15*(b-a);
 
-            //Показ
-            if (true) {
-                System.out.println("// Проанализировано " + p + " позиций, итог:");
-                System.out.println("// Текущая оценка: " + ii_run.analyze(db, dw, t));
-                System.out.print("// Оценка: " + k[1] + ", при возможных ходах:  ");
-                if (k[2]!=0)
-                    if (k[3] == 0)
-                        System.out.println(k[2] + "#");
-                    else if (k[4] == 0)
-                        System.out.println(k[2] + "," + k[3] + "#");
-                    else if (k[5] == 0)
-                        System.out.println(k[2] + "," + k[3] + "  " + k[4] + "#");
-                    else {
-                        if (dif==5)
-                            System.out.println(k[2] + "," + k[3] + "  " + k[4] + "," + k[5] + "  " + k[6] + "," + k[7]);
-                        else
-                            System.out.println(k[2] + "," + k[3] + "  " + k[4] + "," + k[5]);
+        b=0;
+        for (int k=41;k<61;k++)
+            if ((db1[k]==2) & (dw1[k]==0))
+                b=b+1;
+        anl=anl+3*b;
+
+        b=0;
+        for (int k=41;k<61;k++)
+            if ((db1[k]==1) & (dw1[k]==0))
+                b=b+1;
+        anl=-(anl+b);
+
+        // White
+        a=0;
+        b=0;
+        for (int k=1;k<77;k++)
+            if ((dw1[k]==3) & (db1[k]==0))
+                b=b+1;
+        for (int j = 1; j < 17; j++)
+            if (t1[j]!=4)
+            {
+                int[] dwx = new int[77];
+                System.arraycopy(secondary.auth_d(dw1, t1, j), 0, dwx, 0, 77);
+                for (int k = 1; k < 77; k++)
+                    if (dwx[k] == 4)
+                        a =a+1;
+            }
+        anl=anl+15*(b-a);
+
+        b=0;
+        for (int k=41;k<61;k++)
+            if ((dw1[k]==2) & (db1[k]==0))
+                b=b+1;
+        anl=anl+3*b;
+
+        b=0;
+        for (int k=41;k<61;k++)
+            if ((dw1[k]==1) & (db1[k]==0))
+                b=b+1;
+        anl=anl+b;
+        if (win(db,dw)==-1)
+            anl=-999;
+        if (ii_run.win(db,dw)==1)
+            anl=999;
+        return anl;
+    }
+
+    static int win(int[] db,int[] dw)
+    {
+        boolean a = false;
+        for (int k=1;k<77;k++)
+            if (dw[k] == 4)
+            {
+                a = true;
+                break;
+            }
+        if (a)
+            return 1;
+        for (int k=1;k<77;k++)
+            if (db[k] == 4)
+            {
+                a = true;
+                break;
+            }
+        if (a)
+            return -1;
+        return 0;
+    }
+
+    static int[] tree(int[] db,int[] dw,int[] t)
+    {
+        //Копирование массивов
+        int[] db1 = new int[77];
+        System.arraycopy(db, 0, db1, 0, 77);
+        int[] dw1 = new int[77];
+        System.arraycopy(dw, 0, dw1, 0, 77);
+        int[] t1 = new int[17];
+        System.arraycopy(t, 0, t1, 0, 17);
+        //
+        p=0;
+        int[] o = new int[17];
+        int[][] s = new int[6][17];
+        for (int i = 1; i < 17; i++)
+            o[i]=-22222;
+        for (int i = 1; i < 17; i++)
+            if (t1[i] <4) {
+                System.out.print(i+" ");
+                int[] dbx = new int[77];
+                int[] tx = new int[17];
+                System.arraycopy(db1, 0, dbx, 0, 77);
+                System.arraycopy(t1, 0, tx, 0, 17);
+                dbx = secondary.auth_d(dbx, tx, i);
+                tx[i]+=1;
+                for (int l = 1; l < 77; l++)
+                    if (dbx[l] == 4) {
+                        int[] k = new int[7];
+                        k[0] = i;
+                        k[1]=-999;
+                        p=p+1;
+                        return k;
+                    }
+
+
+                label2: for (int i2 = 1; i2 < 17; i2++)
+                    if (tx[i2] < 4) {
+                        int[] dwx = new int[77];
+                        int[] tx2 = new int[17];
+                        System.arraycopy(dw1, 0, dwx, 0, 77);
+                        System.arraycopy(tx, 0, tx2, 0, 17);
+                        dwx = secondary.auth_d(dwx, tx2, i2);
+                        tx2[i2]+=1;
+                        for (int l = 1; l < 77; l++)
+                            if (dwx[l] == 4) {
+                                int o2 = 999;
+                                if (o2>o[i]) {
+                                    o[i] = o2;
+                                    s[0][i]= i2;
+                                    s[1][i] = 0;
+                                    s[2][i] = 0;
+                                    s[3][i] = 0;
+                                    s[4][i] = 0;
+                                    s[5][i] = 0;
+                                    p=p+1;
+                                }
+                                break label2;
+                            }
+
+                        int a=engine(dbx,dwx,tx2);
+                        int[] dbx1 = new int[77];
+                        int[] tx3 = new int[17];
+                        System.arraycopy(dbx, 0, dbx1, 0, 77);
+                        System.arraycopy(tx2, 0, tx3, 0, 17);
+                        dbx1 = secondary.auth_d(dbx1, tx3, a);
+                        tx3[a]+=1;
+                        for (int l = 1; l < 77; l++)
+                            if (dbx1[l] == 4) {
+                                int o2 = -999;
+                                if (o2 > o[i]) {
+                                    o[i] = o2;
+                                    s[0][i] = i2;
+                                    s[1][i] = a;
+                                    s[2][i] = 0;
+                                    s[3][i] = 0;
+                                    s[4][i] = 0;
+                                    s[5][i] = 0;
+                                    p=p+1;
+                                }
+                                continue label2;
+                            }
+
+                        label: for (int j2 = 1; j2 < 17; j2++)
+                            if (tx3[j2] < 4) {
+                                int[] dwx1 = new int[77];
+                                int[] tx4 = new int[17];
+                                System.arraycopy(dwx, 0, dwx1, 0, 77);
+                                System.arraycopy(tx3, 0, tx4, 0, 17);
+                                dwx1 = secondary.auth_d(dwx1, tx4, j2);
+                                tx4[j2]+=1;
+                                for (int l = 1; l < 77; l++)
+                                    if (dwx1[l] == 4) {
+                                        int o2 = 999;
+                                        if (o2>o[i]) {
+                                            o[i] = o2;
+                                            s[0][i] = i2;
+                                            s[1][i] = a;
+                                            s[2][i] = j2;
+                                            s[3][i] = 0;
+                                            s[4][i] = 0;
+                                            s[5][i] = 0;
+                                            p=p+1;
+                                        }
+                                        break label;
+                                    }
+
+
+
+                                int b = ii_run.engine(dbx1, dwx1, tx4);
+                                int[] dbx2 = new int[77];
+                                int[] tx5 = new int[17];
+                                System.arraycopy(dbx1, 0, dbx2, 0, 77);
+                                System.arraycopy(tx4, 0, tx5, 0, 17);
+                                dbx2 = secondary.auth_d(dbx2, tx5, b);
+                                tx5[b]+=1;
+                                for (int l = 1; l < 77; l++)
+                                    if (dbx2[l] == 4) {
+                                        int o2 = -999;
+                                        if (o2>o[i]) {
+                                            o[i] = o2;
+                                            s[0][i] = i2;
+                                            s[1][i] = a;
+                                            s[2][i] = j2;
+                                            s[3][i] = b;
+                                            s[4][i] = 0;
+                                            s[5][i] = 0;
+                                            p=p+1;
+                                        }
+                                        continue label;
+                                    }
+
+                                label3: for (int k = 1; k < 17; k++)
+                                    if (tx5[k] < 4) {
+                                        int[] dwx2 = new int[77];
+                                        int[] tx6 = new int[17];
+                                        System.arraycopy(dwx1, 0, dwx2, 0, 77);
+                                        System.arraycopy(tx5, 0, tx6, 0, 17);
+                                        dwx2 = secondary.auth_d(dwx2, tx6, k);
+                                        tx6[k]+=1;
+                                        for (int l = 1; l < 77; l++)
+                                            if (dwx2[l] == 4) {
+                                                int o2 = 999;
+                                                if (o2 > o[i]) {
+                                                    o[i] = o2;
+                                                    s[0][i] = i2;
+                                                    s[1][i] = a;
+                                                    s[2][i] = j2;
+                                                    s[3][i] = b;
+                                                    s[4][i] = k;
+                                                    s[5][i] = 0;
+                                                    p = p + 1;
+                                                }
+                                                break label3;
+                                            }
+
+
+                                        int d = ii_run.engine(dbx2, dwx2, tx6);
+                                        int[] dbx3 = new int[77];
+                                        int[] tx7 = new int[17];
+                                        System.arraycopy(dbx2, 0, dbx3, 0, 77);
+                                        System.arraycopy(tx6, 0, tx7, 0, 17);
+                                        dbx3 = secondary.auth_d(dbx3, tx7, d);
+                                        tx7[i]+=d;
+                                        for (int l = 1; l < 77; l++)
+                                            if (dbx3[l] == 4) {
+                                                int o2 = -999;
+                                                if (o2 > o[i]) {
+                                                    o[i] = o2;
+                                                    s[0][i] = i2;
+                                                    s[1][i] = a;
+                                                    s[2][i] = j2;
+                                                    s[3][i] = b;
+                                                    s[4][i] = k;
+                                                    s[5][i] = d;
+                                                    p = p + 1;
+                                                }
+                                                continue label3;
+                                            }
+
+                                        int o2 = analyze(dbx3, dwx2, tx7);
+                                        p = p + 1;
+                                        if (o2 > o[i]) {
+                                            o[i] = o2;
+                                            s[0][i] = i2;
+                                            s[1][i] = a;
+                                            s[2][i] = j2;
+                                            s[3][i] = b;
+                                            s[4][i] = k;
+                                            s[5][i] = d;
+                                        }
+
+
+
+                                    }
+
+                            }
                     }
             }
-        }
-        System.out.println("Ход:");
-        System.out.println(a);
 
-        if (ii_run.win(db,dw)==-1)
-        {
-            System.out.println("Компьютер Выиграл!");
-            int prosto = scanner.nextInt();
-            System.exit(0);
-        }
+        int min = 1000;
+        int[] k = new int[8];
+        for (int i = 1; i < 17; i++)
+            if ((o[i]<=min) & (o[i]!=-22222)) {
+                min = o[i];
+                k[0] = i;
+            }
+        if ((o[1]==999)  & (o[2]==999)  & (o[3]==999)  & (o[4]==999)  & (o[5]==999)  & (o[6]==999)  & (o[7]==999)  & (o[8]==999)  & (o[9]==999)  & (o[10]==999)  & (o[11]==999)  & (o[12]==999)  & (o[13]==999)  & (o[14]==999)  & (o[15]==999)  & (o[16]==999))
+            k[0]=engine(db1,dw1,t1);
+        k[1]=min;
+        k[2]=s[0][k[0]];
+        k[3]=s[1][k[0]];
+        k[4]=s[2][k[0]];
+        k[5]=s[3][k[0]];
+        k[6]=s[4][k[0]];
+        k[7]=s[5][k[0]];
+        return k;
 
-        System.out.println("------------");
-        run_application();
     }
 
-    private static void auth(int n,int color)
+    static int engine_1(int[] db,int[] dw,int[] t)
     {
+        //Копирование массивов
+        int[] db1 = new int[77];
+        System.arraycopy(db,0,db1,0,77);
+        int[] dw1 = new int[77];
+        System.arraycopy(dw,0,dw1,0,77);
+        int[] t1 = new int[77];
+        System.arraycopy(t,0,t1,0,17);
+        //
 
-        int x, y = 0, z;
-        x=(n-1)%4+1;
-        if ((n >= 1) & (n <= 4))
-            y = 4;
-        if ((n >= 5) & (n <= 8))
-            y = 3;
-        if ((n >= 9) & (n <= 12))
-            y = 2;
-        if ((n >= 13) & (n <= 16))
-            y = 1;
-        z = t[n] + 1;
-        if (color==0) {
-            for (int i = 1; i < 5; i++)
-                if ((y == i) & (z == 1)) {
-                    dw[i] = dw[i] + 1;
-                }
-            for (int i = 1; i < 5; i++) {
-                if ((x == i) & (z == 1))
-                    dw[i + 4] = dw[i + 4] + 1;
-            }
-            if ((5 - x == y) & (z == 1))
-                dw[9] = dw[9] + 1;
+        //Атака 4 в ряд
+        int a=0;
+        int b =secondary.attack(db1,dw1);
+        if (b!=0)
+            a = b;
 
-            if ((x == y) & (z == 1))
-                dw[10] = dw[10] + 1;
-
-            for (int i = 1; i < 5; i++) {
-                if ((y == i) & (z == 2))
-                    dw[10 + i] = dw[10 + i] + 1;
-            }
-            for (int i = 1; i < 5; i++) {
-                if ((x == i) & (z == 2))
-                    dw[i + 14] = dw[i + 14] + 1;
-            }
-            if ((5 - x == y) & (z == 2))
-                dw[19] = dw[19] + 1;
-
-            if ((x == y) & (z == 2))
-                dw[20] = dw[20] + 1;
-
-            for (int i = 1; i < 5; i++) {
-                if ((y == i) & (z == 3))
-                    dw[i + 20] = dw[i + 20] + 1;
-            }
-            for (int i = 1; i < 5; i++) {
-                if ((x == i) & (z == 3))
-                    dw[i + 24] = dw[i + 24] + 1;
-            }
-            if ((5 - x == y) & (z == 3))
-                dw[29] = dw[29] + 1;
-
-            if ((x == y) & (z == 3))
-                dw[30] = dw[30] + 1;
-
-            for (int i = 1; i < 5; i++) {
-                if ((y == i) & (z == 4))
-                    dw[i + 30] = dw[i + 30] + 1;
-            }
-            for (int i = 1; i < 5; i++) {
-                if ((x == i) & (z == 4))
-                    dw[i + 34] = dw[i + 34] + 1;
-            }
-            if ((5 - x == y) & (z == 4))
-                dw[39] = dw[39] + 1;
-
-            if ((x == y) & (z == 4))
-                dw[40] = dw[40] + 1;
-
-            for (int i = 1; i < 5; i++) {
-                if ((x == i) & (5 - y == z))
-                    dw[40 + i] = dw[40 + i] + 1;
-                if ((x == i) & (y == z))
-                    dw[44 + i] = dw[44 + i] + 1;
-                if ((y == 5 - i) & (x == z))
-                    dw[48 + i] = dw[48 + i] + 1;
-                if ((y == 5 - i) & (5 - x == z))
-                    dw[52 + i] = dw[52 + i] + 1;
-            }
-
-            if ((x == z) & (x == 5 - y))
-                dw[57] = dw[57] + 1;
-
-            if ((x == 5 - z) & (x == y))
-                dw[58] = dw[58] + 1;
-
-            if ((y == z) & (x == 5 - y))
-                dw[59] = dw[59] + 1;
-
-            if ((x == z) & (x == y))
-                dw[60] = dw[60] + 1;
-
-            dw[n + 60] = dw[n + 60] + 1;
-            t[n] = t[n] + 1;
+        //Защита 4 в ряд
+        if (a==0) {
+            b = secondary.attack(dw1, db1);
+            if (b != 0)
+                a = b;
         }
-        if (color==1) {
-            for (int i = 1; i < 5; i++)
-                if ((y == i) & (z == 1)) {
-                    db[i] = db[i] + 1;
-                }
-            for (int i = 1; i < 5; i++) {
-                if ((x == i) & (z == 1))
-                    db[i + 4] = db[i + 4] + 1;
-            }
-            if ((5 - x == y) & (z == 1))
-                db[9] = db[9] + 1;
 
-            if ((x == y) & (z == 1))
-                db[10] = db[10] + 1;
-
-            for (int i = 1; i < 5; i++) {
-                if ((y == i) & (z == 2))
-                    db[10 + i] = db[10 + i] + 1;
-            }
-            for (int i = 1; i < 5; i++) {
-                if ((x == i) & (z == 2))
-                    db[i + 14] = db[i + 14] + 1;
-            }
-            if ((5 - x == y) & (z == 2))
-                db[19] = db[19] + 1;
-
-            if ((x == y) & (z == 2))
-                db[20] = db[20] + 1;
-
-            for (int i = 1; i < 5; i++) {
-                if ((y == i) & (z == 3))
-                    db[i + 20] = db[i + 20] + 1;
-            }
-            for (int i = 1; i < 5; i++) {
-                if ((x == i) & (z == 3))
-                    db[i + 24] = db[i + 24] + 1;
-            }
-            if ((5 - x == y) & (z == 3))
-                db[29] = db[29] + 1;
-
-            if ((x == y) & (z == 3))
-                db[30] = db[30] + 1;
-
-            for (int i = 1; i < 5; i++) {
-                if ((y == i) & (z == 4))
-                    db[i + 30] = db[i + 30] + 1;
-            }
-            for (int i = 1; i < 5; i++) {
-                if ((x == i) & (z == 4))
-                    db[i + 34] = db[i + 34] + 1;
-            }
-            if ((5 - x == y) & (z == 4))
-                db[39] = db[39] + 1;
-
-            if ((x == y) & (z == 4))
-                db[40] = db[40] + 1;
-
-            for (int i = 1; i < 5; i++) {
-                if ((x == i) & (5 - y == z))
-                    db[40 + i] = db[40 + i] + 1;
-                if ((x == i) & (y == z))
-                    db[44 + i] = db[44 + i] + 1;
-                if ((y == 5 - i) & (x == z))
-                    db[48 + i] = db[48 + i] + 1;
-                if ((y == 5 - i) & (5 - x == z))
-                    db[52 + i] = db[52 + i] + 1;
-            }
-
-            if ((x == z) & (x == 5 - y))
-                db[57] = db[57] + 1;
-
-            if ((x == 5 - z) & (x == y))
-                db[58] = db[58] + 1;
-
-            if ((y == z) & (x == 5 - y))
-                db[59] = db[59] + 1;
-
-            if ((x == z) & (x == y))
-                db[60] = db[60] + 1;
-
-            db[n + 60] = db[n + 60] + 1;
-            t[n] = t[n] + 1;
+        // Ранддом
+        if (a==0) {
+            b = secondary.random(db1, dw1, t1);
+            if (b != 0)
+                a = b;
         }
+
+        return a;
+    }
+
+    static int engine_2(int[] db,int[] dw,int[] t)
+    {
+        //Копирование массивов
+        int[] db1 = new int[77];
+        System.arraycopy(db,0,db1,0,77);
+        int[] dw1 = new int[77];
+        System.arraycopy(dw,0,dw1,0,77);
+        int[] t1 = new int[77];
+        System.arraycopy(t,0,t1,0,17);
+        //
+
+        //Атака 4 в ряд
+        int a=0;
+        int b =secondary.attack(db1,dw);
+        if (b!=0)
+            a = b;
+
+        //Защита 4 в ряд
+        if (a==0) {
+            b = secondary.attack(dw1, db1);
+            if (b != 0)
+                a = b;
+        }
+
+        // Создание узлов
+        if (a==0) {
+            b = secondary.lip_a(db1, dw1, t1);
+            if (b != 0)
+                a = b;
+        }
+
+        // Защита от узлов
+        if (a==0) {
+            b = secondary.lip_d(db1, dw1, t1);
+            if (b != 0)
+                a = b;
+        }
+
+
+        // Ранддом
+        if (a==0) {
+            b = secondary.random(db1, dw1, t1);
+            if (b != 0)
+                a = b;
+        }
+
+        return a;
+    }
+
+    static int[] tree_2(int[] db,int[] dw,int[] t)
+    {
+        //Копирование массивов
+        int[] db1 = new int[77];
+        System.arraycopy(db, 0, db1, 0, 77);
+        int[] dw1 = new int[77];
+        System.arraycopy(dw, 0, dw1, 0, 77);
+        int[] t1 = new int[17];
+        System.arraycopy(t, 0, t1, 0, 17);
+        //
+        p=0;
+        int[] o = new int[17];
+        int[][] s = new int[6][17];
+        for (int i = 1; i < 17; i++)
+            o[i]=-22222;
+        for (int i = 1; i < 17; i++)
+            if (t1[i] <4) {
+                System.out.print(i+" ");
+                int[] dbx = new int[77];
+                int[] tx = new int[17];
+                System.arraycopy(db1, 0, dbx, 0, 77);
+                System.arraycopy(t1, 0, tx, 0, 17);
+                dbx = secondary.auth_d(dbx, tx, i);
+                tx[i]+=1;
+                for (int l = 1; l < 77; l++)
+                    if (dbx[l] == 4) {
+                        int[] k = new int[7];
+                        k[0] = i;
+                        k[1]=-999;
+                        p=p+1;
+                        return k;
+                    }
+
+
+                label2: for (int i2 = 1; i2 < 17; i2++)
+                    if (tx[i2] < 4) {
+                        int[] dwx = new int[77];
+                        int[] tx2 = new int[17];
+                        System.arraycopy(dw1, 0, dwx, 0, 77);
+                        System.arraycopy(tx, 0, tx2, 0, 17);
+                        dwx = secondary.auth_d(dwx, tx2, i2);
+                        tx2[i2]+=1;
+                        for (int l = 1; l < 77; l++)
+                            if (dwx[l] == 4) {
+                                int o2 = 999;
+                                if (o2>o[i]) {
+                                    o[i] = o2;
+                                    s[0][i]= i2;
+                                    s[1][i] = 0;
+                                    s[2][i] = 0;
+                                    s[3][i] = 0;
+                                    p=p+1;
+                                }
+                                break label2;
+                            }
+
+                        int a=engine(dbx,dwx,tx2);
+                        int[] dbx1 = new int[77];
+                        int[] tx3 = new int[17];
+                        System.arraycopy(dbx, 0, dbx1, 0, 77);
+                        System.arraycopy(tx2, 0, tx3, 0, 17);
+                        dbx1 = secondary.auth_d(dbx1, tx3, a);
+                        tx3[a]+=1;
+                        for (int l = 1; l < 77; l++)
+                            if (dbx1[l] == 4) {
+                                int o2 = -999;
+                                if (o2 > o[i]) {
+                                    o[i] = o2;
+                                    s[0][i] = i2;
+                                    s[1][i] = a;
+                                    s[2][i] = 0;
+                                    s[3][i] = 0;
+                                    p=p+1;
+                                }
+                                continue label2;
+                            }
+
+                        label: for (int j2 = 1; j2 < 17; j2++)
+                            if (tx3[j2] < 4) {
+                                int[] dwx1 = new int[77];
+                                int[] tx4 = new int[17];
+                                System.arraycopy(dwx, 0, dwx1, 0, 77);
+                                System.arraycopy(tx3, 0, tx4, 0, 17);
+                                dwx1 = secondary.auth_d(dwx1, tx4, j2);
+                                tx4[j2]+=1;
+                                for (int l = 1; l < 77; l++)
+                                    if (dwx1[l] == 4) {
+                                        int o2 = 999;
+                                        if (o2>o[i]) {
+                                            o[i] = o2;
+                                            s[0][i] = i2;
+                                            s[1][i] = a;
+                                            s[2][i] = j2;
+                                            s[3][i] = 0;
+                                            p=p+1;
+                                        }
+                                        break label;
+                                    }
+
+
+
+                                int b = ii_run.engine(dbx1, dwx1, tx4);
+                                int[] dbx2 = new int[77];
+                                int[] tx5 = new int[17];
+                                System.arraycopy(dbx1, 0, dbx2, 0, 77);
+                                System.arraycopy(tx4, 0, tx5, 0, 17);
+                                dbx2 = secondary.auth_d(dbx2, tx5, b);
+                                tx5[b]+=1;
+                                for (int l = 1; l < 77; l++)
+                                    if (dbx2[l] == 4) {
+                                        int o2 = -999;
+                                        if (o2>o[i]) {
+                                            o[i] = o2;
+                                            s[0][i] = i2;
+                                            s[1][i] = a;
+                                            s[2][i] = j2;
+                                            s[3][i] = b;
+                                            p=p+1;
+                                        }
+                                        continue label;
+                                    }
+
+
+                                int o2 = analyze(dbx2, dwx1, tx5);
+                                p = p + 1;
+                                if (o2 > o[i]) {
+                                    o[i] = o2;
+                                    s[0][i] = i2;
+                                    s[1][i] = a;
+                                    s[2][i] = j2;
+                                    s[3][i] = b;
+
+                                }
+
+
+
+                            }
+
+                    }
+            }
+
+        int min = 1000;
+        int[] k = new int[8];
+        for (int i = 1; i < 17; i++)
+            if ((o[i]<=min) & (o[i]!=-22222)) {
+                min = o[i];
+                k[0] = i;
+            }
+        if ((o[1]==999)  & (o[2]==999)  & (o[3]==999)  & (o[4]==999)  & (o[5]==999)  & (o[6]==999)  & (o[7]==999)  & (o[8]==999)  & (o[9]==999)  & (o[10]==999)  & (o[11]==999)  & (o[12]==999)  & (o[13]==999)  & (o[14]==999)  & (o[15]==999)  & (o[16]==999))
+            k[0]=engine(db1,dw1,t1);
+        k[1]=min;
+        k[2]=s[0][k[0]];
+        k[3]=s[1][k[0]];
+        k[4]=s[2][k[0]];
+        k[5]=s[3][k[0]];
+        return k;
+
     }
 }
-
-
-
