@@ -1,42 +1,37 @@
 package RUN;
 
+class secondary {
 
-import java.util.Map;
-
-public class secondary {
-
-    public static int[] auth_d(int[] db, int[] t, int l)
-    {
+    static int[] auth_d(int[] db, int[] t, int l) {
         int[] db1 = new int[77];
-        System.arraycopy(db,0,db1,0,77);
+        System.arraycopy(db, 0, db1, 0, 77);
         int[] t1 = new int[77];
-        System.arraycopy(t,0,t1,0,17);
-        int n = l;
-        int x = 0, y = 0, z;
-        x=(n-1)%4+1;
-        if ((n >= 1) & (n <= 4))
+        System.arraycopy(t, 0, t1, 0, 17);
+        int x, y = 0, z;
+        x = (l - 1) % 4 + 1;
+        if ((l >= 1) & (l <= 4))
             y = 4;
-        if ((n >= 5) & (n <= 8))
+        if ((l >= 5) & (l <= 8))
             y = 3;
-        if ((n >= 9) & (n <= 12))
+        if ((l >= 9) & (l <= 12))
             y = 2;
-        if ((n >= 13) & (n <= 16))
+        if ((l >= 13) & (l <= 16))
             y = 1;
-        z = t1[n] + 1;
+        z = t1[l] + 1;
 
         for (int i = 1; i < 5; i++)
             if ((y == i) & (z == 1)) {
-                db1[i] = db1[i] + 1;
+                db1[i] += 1;
             }
         for (int i = 1; i < 5; i++) {
             if ((x == i) & (z == 1))
-                db1[i + 4] = db1[i + 4] + 1;
+                db1[i + 4] += 1;
         }
         if ((5 - x == y) & (z == 1))
-            db1[9] = db1[9] + 1;
+            db1[9] += 1;
 
         if ((x == y) & (z == 1))
-            db1[10] = db1[10] + 1;
+            db1[10] += 1;
 
         for (int i = 1; i < 5; i++) {
             if ((y == i) & (z == 2))
@@ -103,104 +98,27 @@ public class secondary {
         if ((x == z) & (x == y))
             db1[60] = db1[60] + 1;
 
-        db1[n + 60] = db1[n + 60] + 1;
+        db1[l + 60] = db1[l + 60] + 1;
 
         return db1;
     }
 
-    public static int[] auth_t(int[] t, int i)
-    {
-        int[] t1 = new int[77];
-        System.arraycopy(t,0,t1,0,17);
-        t1[i] = t1[i] + 1;
-        return t1;
-    }
-
-
-//engine
-
-    public static int attack(int[] db,int[] dw,int[] t)
-    {
-        int[] db1 = new int[77];
-        System.arraycopy(db,0,db1,0,db.length);
-        int[] t1 = new int[77];
-        System.arraycopy(t,0,t1,0,t.length);
-
-        int a=0;
-        for (int i=1;i<17;i++)
-            if (t1[i]!=4)
-            {
-                int[] dbx= new int[77];
-                System.arraycopy(auth_d(db1,t1,i),0,dbx,0,77);
-                //Условие
-                for (int k=1;k<77;k++)
-                {
-                    if (dbx[k] == 4)
-                    {
-                        a=i;
-                        break;
-                    }
-                }
-                //Конец условия
-                if (a!=0)
-                    break;
-
-            }
-
-        return a;
-    }
-
-    public static int defend(int[] db,int[] dw,int[] t)
-    {
+    private static boolean[] line(int[] db, int[] t) {
         int[] dw1 = new int[77];
-        System.arraycopy(dw,0,dw1,0,dw.length);
+        System.arraycopy(db, 0, dw1, 0, 77);
         int[] t1 = new int[77];
-        System.arraycopy(t,0,t1,0,t.length);
-
-        int a=0;
-        for (int i=1;i<17;i++)
-            if (t1[i]!=4)
-            {
-                int[] dwx= new int[77];
-                System.arraycopy(auth_d(dw1,t1,i),0,dwx,0,77);
-                //Условие
-                for (int k=1;k<77;k++)
-                {
-                    if (dwx[k] == 4)
-                    {
-                        a=i;
-                        break;
-                    }
-                }
-                //Конец условия
-                if (a!=0)
-                    break;
-
-            }
-
-        return a;
-    }
-
-    public static boolean[] lined_dw(int[] db,int[] t)
-    {
-        int[] dw1 = new int[77];
-        System.arraycopy(db,0,dw1,0,db.length);
-        int[] t1 = new int[77];
-        System.arraycopy(t,0,t1,0,t.length);
+        System.arraycopy(t, 0, t1, 0, 17);
 
         boolean[] fw = new boolean[17];
-        for (int i=1;i<17;i++)
-            if (t1[i]<3)
-            {
-                t1[i]=t1[i]+1;
-                int[] dwx= new int[77];
-                System.arraycopy(auth_d(dw1,t1,i),0,dwx,0,77);
+        for (int i = 1; i < 17; i++)
+            if (t1[i] < 3) {
+                t1[i] += 1;
+                int[] dwx = new int[77];
+                System.arraycopy(auth_d(dw1, t1, i), 0, dwx, 0, 77);
                 //Условие
-                for (int k=1;k<77;k++)
-                {
-                    if (dwx[k] == 4)
-                    {
-                        fw[i]=true;
+                for (int k = 1; k < 77; k++) {
+                    if (dwx[k] == 4) {
+                        fw[i] = true;
                         break;
                     }
                 }
@@ -211,73 +129,71 @@ public class secondary {
         return fw;
     }
 
-    public static boolean[] lined_db(int[] dw,int[] t)
-    {
-        int[] db1 = new int[77];
-        System.arraycopy(dw,0,db1,0,dw.length);
-        int[] t1 = new int[77];
-        System.arraycopy(t,0,t1,0,t.length);
+//engine
 
-        boolean[] fb = new boolean[17];
-        for (int i=1;i<17;i++)
-            if (t1[i]<3)
-            {
-                t1[i]=t1[i]+1;
-                int[] dbx= new int[77];
-                System.arraycopy(auth_d(db1,t1,i),0,dbx,0,77);
+    static int attack(int[] db, int[] t) {
+        int[] db1 = new int[77];
+        System.arraycopy(db, 0, db1, 0, 77);
+        int[] t1 = new int[77];
+        System.arraycopy(t, 0, t1, 0, 17);
+
+        int a = 0;
+        for (int i = 1; i < 17; i++)
+            if (t1[i] != 4) {
+                int[] dbx = new int[77];
+                System.arraycopy(auth_d(db1, t1, i), 0, dbx, 0, 77);
                 //Условие
-                for (int k=1;k<77;k++)
-                {
-                    if (dbx[k] == 4)
-                    {
-                        fb[i]=true;
+                for (int k = 1; k < 77; k++) {
+                    if (dbx[k] == 4) {
+                        a = i;
                         break;
                     }
                 }
                 //Конец условия
+                if (a != 0)
+                    break;
 
             }
 
-        return fb;
+        return a;
     }
 
-    public static int lip_a(int[] db,int[] dw,int[] t)
-    {
+    static int lip_a(int[] db, int[] dw, int[] t) {
         int[] db1 = new int[77];
-        System.arraycopy(db,0,db1,0,db.length);
+        System.arraycopy(db, 0, db1, 0, 77);
         int[] t1 = new int[77];
-        System.arraycopy(t,0,t1,0,t.length);
+        System.arraycopy(t, 0, t1, 0, 17);
         boolean[] fw1 = new boolean[17];
-        System.arraycopy(lined_dw(db1, t1),0,fw1,0,17);
+        System.arraycopy(line(db1, t1), 0, fw1, 0, 17);
         boolean[] fb1 = new boolean[17];
-        System.arraycopy(lined_db(dw, t1),0,fb1,0,17);
-        int a=0,b=0,c=0;
-        for (int i=1;i<77;i++)
-            if ((db[i]==3) & (dw[i]==0))
-                c=c+1;
-        for (int i=1;i<17;i++)
-            if ((t1[i]<4) & (fb1[i]=false))
-            {
-                a=0; b=0;
+        System.arraycopy(line(dw, t1), 0, fb1, 0, 17);
+        int a, b, c = 0;
+        for (int i = 1; i < 77; i++)
+            if ((db[i] == 3) & (dw[i] == 0))
+                c = c + 1;
+        for (int i = 1; i < 17; i++)
+            if ((t1[i] < 4) & (!fb1[i])) {
+                a = 0;
+                b = 0;
                 int[] dbx = new int[77];
                 System.arraycopy(auth_d(db1, t1, i), 0, dbx, 0, 77);
                 int[] tx = new int[17];
-                System.arraycopy(auth_t(t1,i), 0, tx, 0, 17);
-                for (int k=1;k<77;k++)
-                    if ((dbx[k]==3) & (dw[k]==0))
-                        b=b+1;
+                System.arraycopy(t1, 0, tx, 0, 17);
+                tx[i] += 1;
+                for (int k = 1; k < 77; k++)
+                    if ((dbx[k] == 3) & (dw[k] == 0))
+                        b++;
                 for (int j = 1; j < 17; j++)
-                    if (t1[j]!=4)
-                    {
+                    if (t1[j] != 4) {
                         int[] dbx1 = new int[77];
                         System.arraycopy(auth_d(dbx, tx, j), 0, dbx1, 0, 77);
                         for (int k = 1; k < 77; k++)
                             if (dbx1[k] == 4)
-                                a =a+1;
+                                a++;
 
 
                     }
-                if (((1 + c < b) | ((c < b) & (fw1[i] == true))) & (a == 2)) {
+                if (((1 + c < b) | ((c < b) & (fw1[i]))) & (a == 2)) {
                     return i;
                 }
             }
@@ -285,111 +201,99 @@ public class secondary {
         return 0;
     }
 
-    public static int lip_d(int[] db,int[] dw,int[] t)
-    {
+    static int lip_d(int[] db, int[] dw, int[] t) {
         int[] dw1 = new int[77];
-        System.arraycopy(dw,0,dw1,0,dw.length);
+        System.arraycopy(dw, 0, dw1, 0, 77);
         int[] t1 = new int[77];
-        System.arraycopy(t,0,t1,0,t.length);
+        System.arraycopy(t, 0, t1, 0, 17);
         boolean[] fb1 = new boolean[17];
-        System.arraycopy(lined_db(dw1, t1),0,fb1,0,17);
-        int a=0,b=0,c=0;
-        for (int i=1;i<77;i++)
-            if ((dw[i]==3) & (db[i]==0))
-                c=c+1;
-        for (int i=1;i<17;i++)
-            if (t1[i]<4)
-            {
+        System.arraycopy(line(dw1, t1), 0, fb1, 0, 17);
+        int a, b, c = 0;
+        for (int i = 1; i < 77; i++)
+            if ((dw[i] == 3) & (db[i] == 0))
+                c = c + 1;
+        for (int i = 1; i < 17; i++)
+            if (t1[i] < 4) {
                 boolean[] xm = new boolean[17];
-                a=0; b=0;
+                a = 0;
+                b = 0;
                 int[] dwx = new int[77];
                 System.arraycopy(auth_d(dw1, t1, i), 0, dwx, 0, 77);
                 int[] tx = new int[17];
-                System.arraycopy(auth_t(t1,i), 0, tx, 0, 17);
-                for (int k=1;k<77;k++)
-                    if ((dwx[k]==3) & (db[k]==0))
-                        b=b+1;
+                System.arraycopy(t1, 0, tx, 0, 17);
+                tx[i] += 1;
+                for (int k = 1; k < 77; k++)
+                    if ((dwx[k] == 3) & (db[k] == 0))
+                        b = b + 1;
                 for (int j = 1; j < 17; j++)
-                    if (t1[j]!=4)
-                    {
+                    if (t1[j] != 4) {
                         int[] dwx1 = new int[77];
                         System.arraycopy(auth_d(dwx, tx, j), 0, dwx1, 0, 77);
                         for (int k = 1; k < 77; k++)
                             if (dwx1[k] == 4) {
                                 a = a + 1;
-                                xm[j]=true;
+                                xm[j] = true;
                             }
 
 
                     }
                 for (int j = 1; j < 17; j++)
-                    if (((1 + c < b) & (fb1[i] == false) & (a >= 2)) | ((c < b) & (fb1[i] == true) & (fb1[j] == false) & (a >= 2) & (xm[j] == true) & (t1[j]!=4))) {
-                        if ((1 + c < b) & (fb1[i] == false))
-                        {
-
-                            a=i;
-                            return a;
-                        }
-                        else
-                        {
-
-                            a=j;
-                            return a;
-                        }
+                    if (((1 + c < b) & (!fb1[i]) & (a >= 2)) | ((c < b) & (fb1[i]) & (!fb1[j]) & (a >= 2) & (xm[j]) & (t1[j] != 4))) {
+                        if ((1 + c < b) & (!fb1[i]))
+                            return i;
+                         else return j;
                     }
             }
 
         return 0;
     }
 
-    public static int debut(int[] db,int[] dw,int[] t)
-    {
-        if (t[1]==0)
+    static int debut(int[] t) {
+        if (t[1] == 0)
             return 1;
-        if (t[4]==0)
+        if (t[4] == 0)
             return 4;
-        if (t[13]==0)
+        if (t[13] == 0)
             return 13;
-        if (t[16]==0)
+        if (t[16] == 0)
             return 16;
         return 0;
     }
 
-    public static int d3_a(int[] db,int[] dw,int[] t)
-    {
+    static int d3_a(int[] db, int[] dw, int[] t) {
         int[] db1 = new int[77];
-        System.arraycopy(db,0,db1,0,db.length);
+        System.arraycopy(db, 0, db1, 0, 77);
         int[] t1 = new int[77];
-        System.arraycopy(t,0,t1,0,t.length);
+        System.arraycopy(t, 0, t1, 0, 17);
         boolean[] fw1 = new boolean[17];
-        System.arraycopy(lined_db(db1, t1),0,fw1,0,17);
-        int a=0,b=0,c=0;
-        for (int i=1;i<77;i++)
-            if ((db[i]==3) & (dw[i]==0))
-                c=c+1;
-        for (int i=1;i<17;i++)
-            if (t1[i]<4)
-            {
-                a=0; b=0;
+        System.arraycopy(line(dw, t1), 0, fw1, 0, 17);
+        int a, b, c = 0;
+        for (int i = 1; i < 77; i++)
+            if ((db[i] == 3) & (dw[i] == 0))
+                c = c + 1;
+        for (int i = 1; i < 17; i++)
+            if (t1[i] < 4) {
+                a = 0;
+                b = 0;
                 int[] dbx = new int[77];
                 System.arraycopy(auth_d(db1, t1, i), 0, dbx, 0, 77);
                 int[] tx = new int[17];
-                System.arraycopy(auth_t(t1,i), 0, tx, 0, 17);
-                for (int k=1;k<77;k++)
-                    if ((dbx[k]==3) & (dw[k]==0))
-                        b=b+1;
+                System.arraycopy(t1, 0, tx, 0, 17);
+                tx[i] += 1;
+                for (int k = 1; k < 77; k++)
+                    if ((dbx[k] == 3) & (dw[k] == 0))
+                        b = b + 1;
                 for (int j = 1; j < 17; j++)
-                    if (t1[j]!=4)
-                    {
+                    if (t1[j] != 4) {
                         int[] dbx1 = new int[77];
                         System.arraycopy(auth_d(dbx, tx, j), 0, dbx1, 0, 77);
                         for (int k = 1; k < 77; k++)
                             if (dbx1[k] == 4)
-                                a =a+1;
+                                a++;
 
 
                     }
-                if ((c < b) & (fw1[i] == false) & (a == 0)) {
+                if ((c < b) & (!fw1[i]) & (a == 0)) {
                     return i;
                 }
             }
@@ -397,41 +301,38 @@ public class secondary {
         return 0;
     }
 
-    public static int d3_d(int[] db,int[] dw,int[] t)
-    {
-        int[] dw1 = new int[77];
-        System.arraycopy(dw,0,dw1,0,dw.length);
+    static int d3_d(int[] db, int[] dw, int[] t) {
         int[] t1 = new int[77];
-        System.arraycopy(t,0,t1,0,t.length);
+        System.arraycopy(t, 0, t1, 0, 17);
         boolean[] fw1 = new boolean[17];
-        System.arraycopy(lined_db(db, t1),0,fw1,0,17);
-        int a=0,b=0,c=0;
-        for (int i=1;i<77;i++)
-            if ((dw[i]==3) & (db[i]==0))
-                c=c+1;
-        for (int i=1;i<17;i++)
-            if (t1[i]<4)
-            {
-                a=0; b=0;
+        System.arraycopy(line(dw, t1), 0, fw1, 0, 17);
+        int a, b, c = 0;
+        for (int i = 1; i < 77; i++)
+            if ((dw[i] == 3) & (db[i] == 0))
+                c = c + 1;
+        for (int i = 1; i < 17; i++)
+            if (t1[i] < 4) {
+                a = 0;
+                b = 0;
                 int[] dwx = new int[77];
                 System.arraycopy(auth_d(dw, t1, i), 0, dwx, 0, 77);
                 int[] tx = new int[17];
-                System.arraycopy(auth_t(t1,i), 0, tx, 0, 17);
-                for (int k=1;k<77;k++)
-                    if ((dwx[k]==3) & (db[k]==0))
-                        b=b+1;
+                System.arraycopy(t1, 0, tx, 0, 17);
+                tx[i] += 1;
+                for (int k = 1; k < 77; k++)
+                    if ((dwx[k] == 3) & (db[k] == 0))
+                        b++;
                 for (int j = 1; j < 17; j++)
-                    if (t1[j]!=4)
-                    {
+                    if (t1[j] != 4) {
                         int[] dwx1 = new int[77];
                         System.arraycopy(auth_d(dwx, tx, j), 0, dwx1, 0, 77);
                         for (int k = 1; k < 77; k++)
                             if (dwx1[k] == 4)
-                                a =a+1;
+                                a = a + 1;
 
 
                     }
-                if ((c < b) & (fw1[i] == false) & (a == 0)) {
+                if ((c < b) & (!fw1[i]) & (a == 0)) {
                     return i;
                 }
             }
@@ -439,30 +340,28 @@ public class secondary {
         return 0;
     }
 
-    public static int dc2(int[] db,int[] dw,int[] t)
-    {
+    static int dc2(int[] db, int[] dw, int[] t) {
         int[] db1 = new int[77];
-        System.arraycopy(db,0,db1,0,db.length);
+        System.arraycopy(db, 0, db1, 0, 77);
         int[] t1 = new int[77];
-        System.arraycopy(t,0,t1,0,t.length);
+        System.arraycopy(t, 0, t1, 0, 17);
         boolean[] fw1 = new boolean[17];
-        System.arraycopy(lined_db(db, t1),0,fw1,0,17);
+        System.arraycopy(line(db, t1), 0, fw1, 0, 17);
         boolean[] fb1 = new boolean[17];
-        System.arraycopy(lined_dw(dw, t1),0,fb1,0,17);
-        int b=0,c=0;
-        for (int i=41;i<61;i++)
-            if ((db[i]==2) & (dw[i]==0))
-                c=c+1;
-        for (int i=1;i<17;i++)
-            if ((t1[i]!=4) & (fw1[i]==false) & (fw1[i]==false))
-            {
-                b=0;
-                int[] dbx= new int[77];
-                System.arraycopy(auth_d(db1,t1,i),0,dbx,0,77);
-                for (int k=41;k<61;k++)
-                    if ((dbx[k]==2) & (dw[k]==0))
-                        b=b+1;
-                if (1+c<b) {
+        System.arraycopy(line(dw, t1), 0, fb1, 0, 17);
+        int b, c = 0;
+        for (int i = 41; i < 61; i++)
+            if ((db[i] == 2) & (dw[i] == 0))
+                c = c + 1;
+        for (int i = 1; i < 17; i++)
+            if ((t1[i] != 4) & (!fw1[i]) & (!fb1[i])) {
+                b = 0;
+                int[] dbx = new int[77];
+                System.arraycopy(auth_d(db1, t1, i), 0, dbx, 0, 77);
+                for (int k = 41; k < 61; k++)
+                    if ((dbx[k] == 2) & (dw[k] == 0))
+                        b++;
+                if (1 + c < b) {
                     return i;
                 }
             }
@@ -470,30 +369,28 @@ public class secondary {
         return 0;
     }
 
-    public static int dc1(int[] db,int[] dw,int[] t)
-    {
+    static int dc1(int[] db, int[] dw, int[] t) {
         int[] db1 = new int[77];
-        System.arraycopy(db,0,db1,0,db.length);
+        System.arraycopy(db, 0, db1, 0, 77);
         int[] t1 = new int[77];
-        System.arraycopy(t,0,t1,0,t.length);
+        System.arraycopy(t, 0, t1, 0, 17);
         boolean[] fw1 = new boolean[17];
-        System.arraycopy(lined_db(db, t1),0,fw1,0,17);
+        System.arraycopy(line(db, t1), 0, fw1, 0, 17);
         boolean[] fb1 = new boolean[17];
-        System.arraycopy(lined_dw(dw, t1),0,fb1,0,17);
-        int b=0,c=0;
-        for (int i=41;i<61;i++)
-            if ((db[i]==2) & (dw[i]==0))
-                c=c+1;
-        for (int i=1;i<17;i++)
-            if ((t1[i]!=4) & (fw1[i]==false) & (fb1[i]==false))
-            {
-                b=0;
-                int[] dbx= new int[77];
-                System.arraycopy(auth_d(db1,t1,i),0,dbx,0,77);
-                for (int k=41;k<61;k++)
-                    if ((dbx[k]==2) & (dw[k]==0))
-                        b=b+1;
-                if (c<b) {
+        System.arraycopy(line(dw, t1), 0, fb1, 0, 17);
+        int b, c = 0;
+        for (int i = 41; i < 61; i++)
+            if ((db[i] == 2) & (dw[i] == 0))
+                c = c + 1;
+        for (int i = 1; i < 17; i++)
+            if ((t1[i] != 4) & (!fw1[i]) & (!fb1[i])) {
+                b = 0;
+                int[] dbx = new int[77];
+                System.arraycopy(auth_d(db1, t1, i), 0, dbx, 0, 77);
+                for (int k = 41; k < 61; k++)
+                    if ((dbx[k] == 2) & (dw[k] == 0))
+                        b++;
+                if (c < b) {
                     return i;
                 }
             }
@@ -501,30 +398,28 @@ public class secondary {
         return 0;
     }
 
-    public static int def_3(int[] db,int[] dw,int[] t)
-    {
+    static int def_3(int[] db, int[] dw, int[] t) {
         int[] db1 = new int[77];
-        System.arraycopy(dw,0,db1,0,dw.length);
+        System.arraycopy(dw, 0, db1, 0, 77);
         int[] t1 = new int[77];
-        System.arraycopy(t,0,t1,0,t.length);
+        System.arraycopy(t, 0, t1, 0, 17);
         boolean[] fw1 = new boolean[17];
-        System.arraycopy(lined_db(db, t1),0,fw1,0,17);
+        System.arraycopy(line(db, t1), 0, fw1, 0, 17);
         boolean[] fb1 = new boolean[17];
-        System.arraycopy(lined_dw(dw, t1),0,fb1,0,17);
-        int b=0,c=0;
-        for (int i=1;i<77;i++)
-            if ((dw[i]==3) & (db[i]==0))
-                c=c+1;
-        for (int i=1;i<17;i++)
-            if ((t1[i]!=4) & (fw1[i]==false) & (fb1[i]==false))
-            {
-                b=0;
-                int[] dbx= new int[77];
-                System.arraycopy(auth_d(db1,t1,i),0,dbx,0,77);
-                for (int k=1;k<77;k++)
-                    if ((dbx[k]==3) & (db[k]==0))
-                        b=b+1;
-                if (c<b) {
+        System.arraycopy(line(dw, t1), 0, fb1, 0, 17);
+        int b, c = 0;
+        for (int i = 1; i < 77; i++)
+            if ((dw[i] == 3) & (db[i] == 0))
+                c = c + 1;
+        for (int i = 1; i < 17; i++)
+            if ((t1[i] != 4) & (!fw1[i]) & (!fb1[i])) {
+                b = 0;
+                int[] dbx = new int[77];
+                System.arraycopy(auth_d(db1, t1, i), 0, dbx, 0, 77);
+                for (int k = 1; k < 77; k++)
+                    if ((dbx[k] == 3) & (db[k] == 0))
+                        b++;
+                if (c < b) {
                     return i;
                 }
             }
@@ -532,42 +427,66 @@ public class secondary {
         return 0;
     }
 
-    public static int rand(int[] db,int[] dw,int[] t)
-    {
+    static int rand(int[] db, int[] dw, int[] t) {
         boolean[] fw1 = new boolean[17];
-        System.arraycopy(lined_db(db, t),0,fw1,0,17);
+        System.arraycopy(line(db, t), 0, fw1, 0, 17);
         boolean[] fb1 = new boolean[17];
-        System.arraycopy(lined_dw(dw, t),0,fb1,0,17);
-        for (int i=1;i<17;i++)
-            if ((t[i]!=4) & (fw1[i]==false) & (fb1[i]==false))
-            {
+        System.arraycopy(line(dw, t), 0, fb1, 0, 17);
+        for (int i = 1; i < 17; i++)
+            if ((t[i] != 4) & (!fw1[i]) & (!fb1[i])) {
                 return i;
             }
-        for (int i=1;i<17;i++)
-            if (t[i]!=4)
-            {
+        for (int i = 1; i < 17; i++)
+            if (t[i] != 4) {
                 return i;
             }
         return 0;
     }
 
-    public static int random(int[] db,int[] dw,int[] t)
-    {
+    static int random(int[] db, int[] dw, int[] t) {
         boolean[] fw1 = new boolean[17];
-        System.arraycopy(lined_db(db, t),0,fw1,0,17);
+        System.arraycopy(line(db, t), 0, fw1, 0, 17);
         boolean[] fb1 = new boolean[17];
-        System.arraycopy(lined_dw(dw, t),0,fb1,0,17);
-        for (int i=1;i<17;i++) {
-            int j=(int)(Math.random()*16+1);
+        System.arraycopy(line(dw, t), 0, fb1, 0, 17);
+        for (int i = 1; i < 17; i++) {
+            int j = (int) (Math.random() * 16 + 1);
 
-            if ((t[j] != 4) & (fw1[j] == false) & (fb1[j] == false)) {
+            if ((t[j] != 4) & (!fw1[j]) & (!fb1[j])) {
                 return j;
-            }
-            else
-            if (t[j] != 4) {
+            } else if (t[j] != 4) {
                 return j;
             }
         }
         return 0;
+    }
+
+    static int double_(int[] db, int[] dw, int[] t) {
+        int[] db1 = new int[77];
+        System.arraycopy(db, 0, db1, 0, 77);
+        int[] t1 = new int[77];
+        System.arraycopy(t, 0, t1, 0, 17);
+        boolean[] fb1 = new boolean[17];
+        System.arraycopy(line(dw, t1), 0, fb1, 0, 17);
+        for (int j=1;j<17;j++)
+        for (int i = 1; i < 17; i++)
+           if ((t1[i] < 2) & (!fb1[i]) & (t1[j] < 4) & (!fb1[j]) & (j!=i)) {
+               int[] dbx = new int[77];
+               System.arraycopy(auth_d(db1, t1, j), 0, dbx, 0, 77);
+               int[] tx = new int[17];
+               System.arraycopy(t1, 0, tx, 0, 17);
+               tx[i] += 1;
+               dbx = auth_d(dbx, tx, i);
+               tx[i] += 1;
+               dbx = auth_d(dbx, tx, i);
+               int a=0;
+               for (int k = 1; k < 77; k++)
+                   if (dbx[k] == 4) {
+                       a++;
+                       if (a == 2)
+                           return j;
+
+                   }
+            }
+                return 0;
     }
 }
