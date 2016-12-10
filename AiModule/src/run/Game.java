@@ -11,7 +11,7 @@ public class Game {
 
     private static int[] db = new int[77], dw = new int[77], t = new int[17];
 
-    public static long p = 0, dif = 0;
+    public static long p = 0;
 
     public static void main(String[] args) {
         try (Scanner scanner = new Scanner(System.in)) {
@@ -67,7 +67,6 @@ public class Game {
         }
 
         int difficultyIndex = readLimitedInt("уровень сложности", LEVELS.length) - 1;
-        dif = difficultyIndex + 1;
 
         DifficultyLevel difficultyLevel = LEVELS[difficultyIndex];
         run(difficultyLevel);
@@ -76,36 +75,31 @@ public class Game {
     private void run(DifficultyLevel difficultyLevel)
     {
         while (true) {
-            int n = readLimitedInt("номер столбца", 16);
-            auth(n, 0);
+            int playerColumn = readLimitedInt("номер столбца", 16);
+            auth(playerColumn, 0);
 
             if (AiRun.win(db, dw) == 1) {
                 System.out.println("Вы Выиграли!");
                 break;
             }
 
-            int a = 0;
-            if (dif==1)
-            {
-                a = AiRun.engine_1(db,dw,t);
-                auth(a, 1);
-            }
-            if (dif==2)
-            {
-                a = AiRun.engine_2(db,dw,t);
-                auth(a, 1);
-            }
-            if (dif==3)
-            {
-                a = AiRun.engine(db,dw,t);
-                auth(a, 1);
-            }
-            if (dif>3) {
+            int aiColumn = 0;
+
+            if (VERY_EASY == difficultyLevel) {
+                aiColumn = AiRun.engine_1(db,dw,t);
+                auth(aiColumn, 1);
+            } else if (EASY == difficultyLevel) {
+                aiColumn = AiRun.engine_2(db,dw,t);
+                auth(aiColumn, 1);
+            } else if (AVERAGE == difficultyLevel) {
+                aiColumn = AiRun.engine(db,dw,t);
+                auth(aiColumn, 1);
+            } else {
                 System.out.println("Идет анализ ходов ...");
-                int[] k = dif==5 ? AiRun.tree(db, dw, t): AiRun.tree_2(db, dw, t);
-                a = k[0];
+                int[] k = (MAXIMAL == difficultyLevel) ? AiRun.tree(db, dw, t): AiRun.tree_2(db, dw, t);
+                aiColumn = k[0];
                 System.out.println();
-                auth(a, 1);
+                auth(aiColumn, 1);
 
                 //Показ
                 if (true) {
@@ -120,7 +114,7 @@ public class Game {
                         else if (k[5] == 0)
                             System.out.println(k[2] + "," + k[3] + "  " + k[4] + "#");
                         else {
-                            if (dif==5)
+                            if (difficultyLevel == MAXIMAL)
                                 System.out.println(k[2] + "," + k[3] + "  " + k[4] + "," + k[5] + "  " + k[6] + "," + k[7]);
                             else
                                 System.out.println(k[2] + "," + k[3] + "  " + k[4] + "," + k[5]);
@@ -128,7 +122,7 @@ public class Game {
                 }
             }
             System.out.println("Ход:");
-            System.out.println(a);
+            System.out.println(aiColumn);
 
             if (AiRun.win(db,dw)==-1)
             {
