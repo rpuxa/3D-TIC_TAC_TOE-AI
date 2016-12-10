@@ -28,7 +28,7 @@ public class Game {
         this.scanner = scanner;
     }
 
-    int readLimitedInt(String name,int minLimit, int maxlimit) {
+    int readLimitedInt(String name, int minLimit, int maxlimit) {
         int value;
 
         System.out.println("Введите " + name + ":");
@@ -75,12 +75,7 @@ public class Game {
         run(difficultyLevel);
     }
 
-    private void run(DifficultyLevel difficultyLevel)
-    {
-        //
-
-        //
-
+    private void run(DifficultyLevel difficultyLevel) {
         while (true) {
             for (int i=1;i<77;++i)
             {
@@ -123,6 +118,25 @@ public class Game {
                 System.err.println(firstTime + " " + secondTime);
                 auth(aiColumn, 1);
 
+                //Показ
+                if (true) {
+                    System.out.println("// Проанализировано " + p + " позиций, итог:");
+                    System.out.println("// Текущая оценка: " + AiRun.analyze(db, dw, t));
+                    System.out.print("// Оценка: " + k[1] + ", при возможных ходах:  ");
+                    if (k[2]!=0)
+                        if (k[3] == 0)
+                            System.out.println(k[2] + "#");
+                        else if (k[4] == 0)
+                            System.out.println(k[2] + "," + k[3] + "#");
+                        else if (k[5] == 0)
+                            System.out.println(k[2] + "," + k[3] + "  " + k[4] + "#");
+                        else {
+                            if (difficultyLevel == MAXIMAL)
+                                System.out.println(k[2] + "," + k[3] + "  " + k[4] + "," + k[5] + "  " + k[6] + "," + k[7]);
+                            else
+                                System.out.println(k[2] + "," + k[3] + "  " + k[4] + "," + k[5]);
+                        }
+                }
             }
             System.out.println("Ход:");
             System.out.println(aiColumn);
@@ -136,14 +150,13 @@ public class Game {
             System.out.println("------------");
         }
 
-        System.out.println("Нажмите любую клавишу для завершения игры.");
+        System.out.println("Нажмите Enter для завершения игры.");
         try {
             System.in.read();
         } catch (IOException cannotHappen) { }
     }
 
-    private void auth(int n,int color)
-    {
+    private void auth(int n,int color) {
 
         int x, y = 0, z;
         x=(n-1)%4+1;
