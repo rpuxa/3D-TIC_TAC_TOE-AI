@@ -11,9 +11,7 @@ public class Game {
 
     private static int[] db = new int[77], dw = new int[77], t = new int[17];
 
-    public static long p = 0,dif = 0;
-
-    private static final String CHOOSE_DIFFICULTY_LEVEL = "Выберите уровень сложности:";
+    public static long p = 0, dif = 0;
 
     public static void main(String[] args) {
         try (Scanner scanner = new Scanner(System.in)) {
@@ -27,37 +25,65 @@ public class Game {
         this.scanner = scanner;
     }
 
+    int readLimitedInt(String name, int limit) {
+        int value;
+
+        System.out.println("Введите " + name + ":");
+
+        while (true) {
+            try {
+                value = scanner.nextInt();
+
+                if (value <= 0 || limit < value) {
+                    throw new IOException();
+                }
+
+                break;
+            } catch (Exception e) {
+                System.out.println(
+                        String.format("Некорректный %s. Повторите ввод", name)
+                );
+
+                scanner.nextLine();
+            }
+        }
+
+        System.out.println();
+
+        return value;
+    }
+
+
     void start() {
         for (DifficultyLevel difficultyLevel : LEVELS) {
             System.out.println(difficultyLevel);
         }
 
-        System.out.println(CHOOSE_DIFFICULTY_LEVEL);
+        System.out.println("Выберите уровень сложности:");
         for (int index = 0; index < LEVELS.length; ++index) {
             System.out.println(
                     String.format("%d) %s", index + 1, LEVELS[index].getName())
             );
         }
 
-        dif = scanner.nextInt();
-        System.out.println();
+        int difficultyIndex = readLimitedInt("уровень сложности", LEVELS.length) - 1;
+        dif = difficultyIndex + 1;
 
-        run();
+        DifficultyLevel difficultyLevel = LEVELS[difficultyIndex];
+        run(difficultyLevel);
     }
 
-    private void run()
+    private void run(DifficultyLevel difficultyLevel)
     {
         while (true) {
-            System.out.println("Введите номер столбца:");
-            int n = scanner.nextInt();
-            if ((0<n) & (n<17)) {
-                auth(n, 0);
+            int n = readLimitedInt("номер столбца", 16);
+            auth(n, 0);
 
-                if (AiRun.win(db, dw) == 1) {
-                    System.out.println("Вы Выиграли!");
-                    break;
-                }
+            if (AiRun.win(db, dw) == 1) {
+                System.out.println("Вы Выиграли!");
+                break;
             }
+
             int a = 0;
             if (dif==1)
             {
