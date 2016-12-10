@@ -17,13 +17,13 @@ public class AiRun {
 
         //Атака 4 в ряд
         int a=0;
-        int b =Secondary.attack(db1,dw1);
+        int b =Secondary.attack(db1,t1);
         if (b!=0)
             a = b;
 
         //Защита 4 в ряд
         if (a==0) {
-            b = Secondary.attack(dw1, db1);
+            b = Secondary.attack(dw1, t1);
             if (b != 0)
                 a = b;
         }
