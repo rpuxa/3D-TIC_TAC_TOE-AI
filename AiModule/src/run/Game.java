@@ -1,127 +1,125 @@
-package RUN;
+package run;
 
+import ai.AiRun;
+import ai.DifficultyLevel;
+import static ai.difficulty.DifficultyLevels.*;
 
+import java.io.IOException;
 import java.util.Scanner;
 
-public class run {
+public class Game {
 
     private static int[] db = new int[77], dw = new int[77], t = new int[17];
 
-    static long p = 0,dif = 0;
+    public static long p = 0,dif = 0;
 
-    public static void main(String[] agrs) {
-        System.out.println("Очень легкий:");
-        System.out.println("    Сложность для начинающих, которая поможет вам понять основные принципы игры.");
-        System.out.println("    Использует только очень слабый движок.");
-        System.out.println();
-        System.out.println("Легкий");
-        System.out.println("    Если вы поняли основные принципы, попробуйте этот тип сложности.");
-        System.out.println("    Поначалу будет сложно, но после слишком легко.");
-        System.out.println("    Использует только основные возможности движка.");
-        System.out.println();
-        System.out.println("Средний");
-        System.out.println("    Выработав свою тактику, попробуйте эту сложность.");
-        System.out.println("    Использует весь движок.");
-        System.out.println();
-        System.out.println("Сложный");
-        System.out.println("    Приготовьтесь к тяжкому испытанию! Для победы");
-        System.out.println("    нужно будет не слабо потренироваться!");
-        System.out.println("    Начинает использовать анализ позиций, полностью использует");
-        System.out.println("    движок и наполовину древо ходов.");
-        System.out.println("    Анализирует примерно 5000 позиций за ход.");
-        System.out.println();
-        System.out.println("Максимальный");
-        System.out.println("    Чтобы одолеть максимальную сложность, нужно иметь");
-        System.out.println("    стратегическое мышление, огромную внимательность");
-        System.out.println("    и быть очень сосредоточенным!");
-        System.out.println("    Использует все возможности по максимуму:");
-        System.out.println("    древо ходов, анализ, движок.");
-        System.out.println("    Анализирует примерно 60000 позиций за ход!");
-        System.out.println();
-        System.out.println("Выберете уровень сложности:");
-        System.out.println("1) Очень легкий");
-        System.out.println("2) Легкий");
-        System.out.println("3) Средний");
-        System.out.println("4) Сложный");
-        System.out.println("5) Максимальный");
-        Scanner scanner = new Scanner(System.in);
+    private static final String CHOOSE_DIFFICULTY_LEVEL = "Выберите уровень сложности:";
+
+    public static void main(String[] args) {
+        try (Scanner scanner = new Scanner(System.in)) {
+            new Game(scanner).start();
+        }
+    }
+
+    private final Scanner scanner;
+
+    Game(Scanner scanner) {
+        this.scanner = scanner;
+    }
+
+    void start() {
+        for (DifficultyLevel difficultyLevel : LEVELS) {
+            System.out.println(difficultyLevel);
+        }
+
+        System.out.println(CHOOSE_DIFFICULTY_LEVEL);
+        for (int index = 0; index < LEVELS.length; ++index) {
+            System.out.println(
+                    String.format("%d) %s", index + 1, LEVELS[index].getName())
+            );
+        }
+
         dif = scanner.nextInt();
         System.out.println();
-        run.run_application();
+
+        run();
     }
 
-    private static void run_application()
+    private void run()
     {
-        System.out.println("Введите номер столбца:");
-        Scanner scanner = new Scanner(System.in);
-        int n = scanner.nextInt();
-        if ((0<n) & (n<17)) {
-            auth(n, 0);
+        while (true) {
+            System.out.println("Введите номер столбца:");
+            int n = scanner.nextInt();
+            if ((0<n) & (n<17)) {
+                auth(n, 0);
 
-            if (ii_run.win(db, dw) == 1) {
-                System.out.println("Вы Выиграли!");
-                int prosto = scanner.nextInt();
-                System.exit(0);
+                if (AiRun.win(db, dw) == 1) {
+                    System.out.println("Вы Выиграли!");
+                    break;
+                }
             }
-        }
-        int a = 0;
-        if (dif==1)
-        {
-            a = ii_run.engine_1(db,dw,t);
-            auth(a, 1);
-        }
-        if (dif==2)
-        {
-            a = ii_run.engine_2(db,dw,t);
-            auth(a, 1);
-        }
-        if (dif==3)
-        {
-            a = ii_run.engine(db,dw,t);
-            auth(a, 1);
-        }
-        if (dif>3) {
-            System.out.println("Идет анализ ходов ...");
-            int[] k = dif==5 ? ii_run.tree(db, dw, t): ii_run.tree_2(db, dw, t);
-            a = k[0];
-            System.out.println();
-            auth(a, 1);
-
-            //Показ
-            if (true) {
-                System.out.println("// Проанализировано " + p + " позиций, итог:");
-                System.out.println("// Текущая оценка: " + ii_run.analyze(db, dw, t));
-                System.out.print("// Оценка: " + k[1] + ", при возможных ходах:  ");
-                if (k[2]!=0)
-                    if (k[3] == 0)
-                        System.out.println(k[2] + "#");
-                    else if (k[4] == 0)
-                        System.out.println(k[2] + "," + k[3] + "#");
-                    else if (k[5] == 0)
-                        System.out.println(k[2] + "," + k[3] + "  " + k[4] + "#");
-                    else {
-                        if (dif==5)
-                            System.out.println(k[2] + "," + k[3] + "  " + k[4] + "," + k[5] + "  " + k[6] + "," + k[7]);
-                        else
-                            System.out.println(k[2] + "," + k[3] + "  " + k[4] + "," + k[5]);
-                    }
+            int a = 0;
+            if (dif==1)
+            {
+                a = AiRun.engine_1(db,dw,t);
+                auth(a, 1);
             }
-        }
-        System.out.println("Ход:");
-        System.out.println(a);
+            if (dif==2)
+            {
+                a = AiRun.engine_2(db,dw,t);
+                auth(a, 1);
+            }
+            if (dif==3)
+            {
+                a = AiRun.engine(db,dw,t);
+                auth(a, 1);
+            }
+            if (dif>3) {
+                System.out.println("Идет анализ ходов ...");
+                int[] k = dif==5 ? AiRun.tree(db, dw, t): AiRun.tree_2(db, dw, t);
+                a = k[0];
+                System.out.println();
+                auth(a, 1);
 
-        if (ii_run.win(db,dw)==-1)
-        {
-            System.out.println("Компьютер Выиграл!");
-            int prosto = scanner.nextInt();
-            System.exit(0);
+                //Показ
+                if (true) {
+                    System.out.println("// Проанализировано " + p + " позиций, итог:");
+                    System.out.println("// Текущая оценка: " + AiRun.analyze(db, dw, t));
+                    System.out.print("// Оценка: " + k[1] + ", при возможных ходах:  ");
+                    if (k[2]!=0)
+                        if (k[3] == 0)
+                            System.out.println(k[2] + "#");
+                        else if (k[4] == 0)
+                            System.out.println(k[2] + "," + k[3] + "#");
+                        else if (k[5] == 0)
+                            System.out.println(k[2] + "," + k[3] + "  " + k[4] + "#");
+                        else {
+                            if (dif==5)
+                                System.out.println(k[2] + "," + k[3] + "  " + k[4] + "," + k[5] + "  " + k[6] + "," + k[7]);
+                            else
+                                System.out.println(k[2] + "," + k[3] + "  " + k[4] + "," + k[5]);
+                        }
+                }
+            }
+            System.out.println("Ход:");
+            System.out.println(a);
+
+            if (AiRun.win(db,dw)==-1)
+            {
+                System.out.println("Компьютер Выиграл!");
+                break;
+            }
+
+            System.out.println("------------");
         }
 
-        System.out.println("------------");
-        run_application();
+        System.out.println("Нажмите любую клавишу для завершения игры.");
+        try {
+            System.in.read();
+        } catch (IOException cannotHappen) { }
     }
 
-    private static void auth(int n,int color)
+    private void auth(int n,int color)
     {
 
         int x, y = 0, z;

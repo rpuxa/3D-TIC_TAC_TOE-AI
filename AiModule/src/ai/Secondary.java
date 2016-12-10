@@ -1,6 +1,6 @@
-package RUN;
+package ai;
 
-class secondary {
+public class Secondary {
 
     static int[] auth_d(int[] db, int[] t, int l) {
         int[] db1 = new int[77];
