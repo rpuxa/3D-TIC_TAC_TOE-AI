@@ -11,9 +11,7 @@ public class Game {
 
     private static int[] db = new int[77], dw = new int[77], t = new int[17];
 
-    public static long p = 0,dif = 0;
-
-    private static final String CHOOSE_DIFFICULTY_LEVEL = "Выберите уровень сложности:";
+    public static long p = 0;
 
     public static void main(String[] args) {
         try (Scanner scanner = new Scanner(System.in)) {
@@ -27,59 +25,81 @@ public class Game {
         this.scanner = scanner;
     }
 
+    int readLimitedInt(String name, int limit) {
+        int value;
+
+        System.out.println("Введите " + name + ":");
+
+        while (true) {
+            try {
+                value = scanner.nextInt();
+
+                if (value <= 0 || limit < value) {
+                    throw new IOException();
+                }
+
+                break;
+            } catch (Exception e) {
+                System.out.println(
+                        String.format("Некорректный %s. Повторите ввод", name)
+                );
+
+                scanner.nextLine();
+            }
+        }
+
+        System.out.println();
+
+        return value;
+    }
+
+
     void start() {
         for (DifficultyLevel difficultyLevel : LEVELS) {
             System.out.println(difficultyLevel);
         }
 
-        System.out.println(CHOOSE_DIFFICULTY_LEVEL);
+        System.out.println("Выберите уровень сложности:");
         for (int index = 0; index < LEVELS.length; ++index) {
             System.out.println(
                     String.format("%d) %s", index + 1, LEVELS[index].getName())
             );
         }
 
-        dif = scanner.nextInt();
-        System.out.println();
+        int difficultyIndex = readLimitedInt("уровень сложности", LEVELS.length) - 1;
 
-        run();
+        DifficultyLevel difficultyLevel = LEVELS[difficultyIndex];
+        run(difficultyLevel);
     }
 
-    private void run()
+    private void run(DifficultyLevel difficultyLevel)
     {
         while (true) {
-            System.out.println("Введите номер столбца:");
-            int n = scanner.nextInt();
-            if ((0<n) & (n<17)) {
-                auth(n, 0);
+            int playerColumn = readLimitedInt("номер столбца", 16);
+            auth(playerColumn, 0);
 
-                if (AiRun.win(db, dw) == 1) {
-                    System.out.println("Вы Выиграли!");
-                    break;
-                }
+            if (AiRun.win(db, dw) == 1) {
+                System.out.println("Вы Выиграли!");
+                break;
             }
-            int a = 0;
-            if (dif==1)
-            {
-                a = AiRun.engine_1(db,dw,t);
-                auth(a, 1);
-            }
-            if (dif==2)
-            {
-                a = AiRun.engine_2(db,dw,t);
-                auth(a, 1);
-            }
-            if (dif==3)
-            {
-                a = AiRun.engine(db,dw,t);
-                auth(a, 1);
-            }
-            if (dif>3) {
+
+            int aiColumn = 0;
+
+            if (VERY_EASY == difficultyLevel) {
+                aiColumn = AiRun.engine_1(db,dw,t);
+                auth(aiColumn, 1);
+            } else if (EASY == difficultyLevel) {
+                aiColumn = AiRun.engine_2(db,dw,t);
+                auth(aiColumn, 1);
+            } else if (AVERAGE == difficultyLevel) {
+                aiColumn = AiRun.engine(db,dw,t);
+                auth(aiColumn, 1);
+            } else {
                 System.out.println("Идет анализ ходов ...");
-                int[] k = dif==5 ? AiRun.tree(db, dw, t): AiRun.tree_2(db, dw, t);
-                a = k[0];
+                int[] k = (MAXIMAL == difficultyLevel) ? AiRun.tree(db, dw, t): AiRun.tree_2(db, dw, t);
+                aiColumn = k[0];
                 System.out.println();
-                auth(a, 1);
+                auth(aiColumn, 1);
 
                 //Показ
                 if (true) {
@@ -94,7 +114,7 @@ public class Game {
                         else if (k[5] == 0)
                             System.out.println(k[2] + "," + k[3] + "  " + k[4] + "#");
                         else {
-                            if (dif==5)
+                            if (difficultyLevel == MAXIMAL)
                                 System.out.println(k[2] + "," + k[3] + "  " + k[4] + "," + k[5] + "  " + k[6] + "," + k[7]);
                             else
                                 System.out.println(k[2] + "," + k[3] + "  " + k[4] + "," + k[5]);
@@ -102,7 +122,7 @@ public class Game {
                 }
             }
             System.out.println("Ход:");
-            System.out.println(a);
+            System.out.println(aiColumn);
 
             if (AiRun.win(db,dw)==-1)
             {
