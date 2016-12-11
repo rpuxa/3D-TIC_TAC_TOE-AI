@@ -13,6 +13,8 @@ public class Game {
 
     public static long p = 0;
 
+    public static boolean first = true;
+
     public static void main(String[] args) {
         try (Scanner scanner = new Scanner(System.in)) {
             new Game(scanner).start();
@@ -25,7 +27,7 @@ public class Game {
         this.scanner = scanner;
     }
 
-    int readLimitedInt(String name, int limit) {
+    int readLimitedInt(String name,int minLimit, int maxlimit) {
         int value;
 
         System.out.println("Введите " + name + ":");
@@ -34,7 +36,7 @@ public class Game {
             try {
                 value = scanner.nextInt();
 
-                if (value <= 0 || limit < value) {
+                if (value < minLimit || maxlimit < value) {
                     throw new IOException();
                 }
 
@@ -66,7 +68,7 @@ public class Game {
             );
         }
 
-        int difficultyIndex = readLimitedInt("уровень сложности", LEVELS.length) - 1;
+        int difficultyIndex = readLimitedInt("уровень сложности", 1 , LEVELS.length) - 1;
 
         DifficultyLevel difficultyLevel = LEVELS[difficultyIndex];
         run(difficultyLevel);
@@ -75,9 +77,9 @@ public class Game {
     private void run(DifficultyLevel difficultyLevel)
     {
         while (true) {
-            int playerColumn = readLimitedInt("номер столбца", 16);
+            int playerColumn = readLimitedInt("номер столбца", first ? 0 : 1,16);
             auth(playerColumn, 0);
-
+            first=false;
             if (AiRun.win(db, dw) == 1) {
                 System.out.println("Вы Выиграли!");
                 break;
