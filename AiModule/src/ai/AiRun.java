@@ -119,62 +119,65 @@ public class AiRun {
         int[] t1 = new int[77];
         System.arraycopy(t, 0, t1, 0, 17);
         //
-        // Black
-        int a=0,b=0,anl;
-        for (int k=1;k<77;k++)
-            if ((db1[k]==3) & (dw1[k]==0))
-                b=b+1;
+       int [] fw = new int[17],fb = new int[17];
+        for (int i = 1; i < 17; i++) {
+            fw[i] = 0;
+            fb[i]=0;
+        }
+       int anl=0;
         for (int j = 1; j < 17; j++)
-            if (t1[j]!=4)
+            for (int i = 1; i < 4; i++)
+            if (((t1[i]<3) && (i==1)) || ((t1[i]<2) && (i==2)) || ((t1[i]==0) && (i==3)))
             {
-                int[] dbx = new int[77];
-                System.arraycopy(Secondary.auth_d(db1, t1, j), 0, dbx, 0, 77);
-                for (int k = 1; k < 77; k++)
-                    if (dbx[k] == 4)
-                        a =a+1;
-            }
-        anl=15*(b-a);
-
-        b=0;
-        for (int k=41;k<61;k++)
-            if ((db1[k]==2) & (dw1[k]==0))
-                b=b+1;
-        anl=anl+3*b;
-
-        b=0;
-        for (int k=41;k<61;k++)
-            if ((db1[k]==1) & (dw1[k]==0))
-                b=b+1;
-        anl=-(anl+b);
-
-        // White
-        a=0;
-        b=0;
-        for (int k=1;k<77;k++)
-            if ((dw1[k]==3) & (db1[k]==0))
-                b=b+1;
-        for (int j = 1; j < 17; j++)
-            if (t1[j]!=4)
-            {
+                int[] tx = new int[77];
+                System.arraycopy(t1, 0, tx, 0, 17);
+                tx[j]+=i;
                 int[] dwx = new int[77];
-                System.arraycopy(Secondary.auth_d(dw1, t1, j), 0, dwx, 0, 77);
+                System.arraycopy(Secondary.auth_d(dw1, tx, j), 0, dwx, 0, 77);
                 for (int k = 1; k < 77; k++)
                     if (dwx[k] == 4)
-                        a =a+1;
+                    {
+                        fw[j]=i;
+                    }
             }
-        anl=anl+15*(b-a);
 
-        b=0;
+        for (int j = 1; j < 17; j++)
+            for (int i = 1; i < 4; i++)
+                if (((t1[i]<3) && (i==1)) || ((t1[i]<2) && (i==2)) || ((t1[i]==0) && (i==3)))
+                {
+                    int[] tx = new int[77];
+                    System.arraycopy(t1, 0, tx, 0, 17);
+                    tx[j]+=i;
+                    int[] dwx = new int[77];
+                    System.arraycopy(Secondary.auth_d(db1, tx, j), 0, dwx, 0, 77);
+                    for (int k = 1; k < 77; k++)
+                        if (dwx[k] == 4)
+                        {
+                            fb[j]=i;
+                        }
+                }
+        for (int i = 1; i < 17; i++) {
+            if (fb[i] < fw[i])
+                anl += 50;
+            if (fb[i] > fw[i])
+                anl += -50;
+        }
         for (int k=41;k<61;k++)
             if ((dw1[k]==2) & (db1[k]==0))
-                b=b+1;
-        anl=anl+3*b;
+                anl+=5;
 
-        b=0;
         for (int k=41;k<61;k++)
             if ((dw1[k]==1) & (db1[k]==0))
-                b=b+1;
-        anl=anl+b;
+                anl+=1;
+
+        for (int k=41;k<61;k++)
+            if ((db1[k]==2) & (dw1[k]==0))
+                anl+=-5;
+
+        for (int k=41;k<61;k++)
+            if ((db1[k]==1) & (dw1[k]==0))
+                anl+=-1;
+
         if (win(db,dw)==-1)
             anl=-999;
         if (AiRun.win(db,dw)==1)
