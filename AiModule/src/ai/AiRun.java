@@ -229,7 +229,6 @@ public class AiRun {
                         return i;
                 t[i]++;
                 int result = analyze(db.clone(), dw.clone(), t.clone(), depth + 1, maxDepth);
-                System.out.println(result);
                 if (result < min) {
                     min = result;
                     resultMove = i;
@@ -240,15 +239,13 @@ public class AiRun {
         }
 
         if (depth == maxDepth) {
-            int asd=analyzeMaxDepth(db, dw, t);
-            if (asd==997)
-                System.out.print("");
-            return asd;
+            return analyzeMaxDepth(db, dw, t);
+
         }
 
         if ((depth == 1) || (depth == 3) || (depth == 5)) {
             int max=-10000;
-            for (int i = 1; i < 77; i++)
+            for (int i = 1; i < 17; i++)
                 if (t[i]<4)
             {
                 if (lastMove!=0) {
