@@ -2,6 +2,8 @@ package ai;
 
 import run.Game;
 
+import java.lang.reflect.Array;
+
 public class AiRun {
 
     public static int engine(int[] db,int[] dw,int[] t)
@@ -109,7 +111,7 @@ public class AiRun {
         return a;
     }
 
-    public static int analyze(int[] db,int[] dw,int[] t)
+    public static int analyzeMaxDepth(int[] db,int[] dw,int[] t)
     {
         //Копирование массивов
         int[] db1 = new int[77];
@@ -179,9 +181,9 @@ public class AiRun {
                 anl+=-1;
 
         if (win(db,dw)==-1)
-            anl=-999;
-        if (AiRun.win(db,dw)==1)
-            anl=999;
+            anl=-1004;
+        if (win(db,dw)==1)
+            anl=996;
         return anl;
     }
 
@@ -207,221 +209,77 @@ public class AiRun {
         return 0;
     }
 
-    public static int[] tree(int[] db,int[] dw,int[] t)
-    {
-        //Копирование массивов
-        int[] db1 = new int[77];
-        System.arraycopy(db, 0, db1, 0, 77);
-        int[] dw1 = new int[77];
-        System.arraycopy(dw, 0, dw1, 0, 77);
-        int[] t1 = new int[17];
-        System.arraycopy(t, 0, t1, 0, 17);
-        //
-        Game.p=0;
-        int[] o = new int[17];
-        int[][] s = new int[6][17];
-        for (int i = 1; i < 17; i++)
-            o[i]=-22222;
-        for (int i = 1; i < 17; i++)
-            if (t1[i] <4) {
+    public static int analyze(int[] db, int[] dw, int[] t, int depth, int maxDepth) {
+        int lastMove = 0;
+        if (depth == 0) {
+            int min = 10000;
+            int resultMove = 0;
+            for (int i = 1; i < 17; i++)
+            if (t[i]<4)
+            {
                 System.out.print(i+" ");
-                int[] dbx = new int[77];
-                int[] tx = new int[17];
-                System.arraycopy(db1, 0, dbx, 0, 77);
-                System.arraycopy(t1, 0, tx, 0, 17);
-                dbx = Secondary.auth_d(dbx, tx, i);
-                tx[i]+=1;
-                for (int l = 1; l < 77; l++)
-                    if (dbx[l] == 4) {
-                        int[] k = new int[7];
-                        k[0] = i;
-                        k[1]=-999;
-                        Game.p= Game.p+1;
-                        return k;
-                    }
+                if (lastMove!=0){
+                db=InfAuth(db, t, lastMove);
+                t[lastMove]+=-1;
+                }
+                lastMove=i;
+                db = Secondary.auth_d(db, t, i);
+                for (int k = 1; k < 77; k++)
+                    if (db[k] == 4)
+                        return i;
+                t[i]++;
+                int result = analyze(db.clone(), dw.clone(), t.clone(), depth + 1, maxDepth);
+                System.out.println(result);
+                if (result < min) {
+                    min = result;
+                    resultMove = i;
+                }
+
+            }
+            return resultMove;
+        }
+
+        if (depth == maxDepth) {
+            int asd=analyzeMaxDepth(db, dw, t);
+            if (asd==997)
+                System.out.print("");
+            return asd;
+        }
+
+        if ((depth == 1) || (depth == 3) || (depth == 5)) {
+            int max=-10000;
+            for (int i = 1; i < 77; i++)
+                if (t[i]<4)
+            {
+                if (lastMove!=0) {
+                    dw = InfAuth(dw, t, lastMove);
+                    t[lastMove] += -1;
+                }
+                lastMove=i;
+                dw = Secondary.auth_d(dw, t, i);
+                for (int k = 1; k < 77; k++)
+                    if (dw[k] == 4)
+                        return 1000-depth;
+                t[i]++;
+                int result = analyze(db.clone(), dw.clone(), t.clone(), depth + 1, maxDepth);
+                if (result > max)
+                    max = result;
+            }
+            return max;
+        }
 
 
-                label2: for (int i2 = 1; i2 < 17; i2++)
-                    if (tx[i2] < 4) {
-                        int[] dwx = new int[77];
-                        int[] tx2 = new int[17];
-                        System.arraycopy(dw1, 0, dwx, 0, 77);
-                        System.arraycopy(tx, 0, tx2, 0, 17);
-                        dwx = Secondary.auth_d(dwx, tx2, i2);
-                        tx2[i2]+=1;
-                        for (int l = 1; l < 77; l++)
-                            if (dwx[l] == 4) {
-                                int o2 = 999;
-                                if (o2>o[i]) {
-                                    o[i] = o2;
-                                    s[0][i]= i2;
-                                    s[1][i] = 0;
-                                    s[2][i] = 0;
-                                    s[3][i] = 0;
-                                    s[4][i] = 0;
-                                    s[5][i] = 0;
-                                    Game.p= Game.p+1;
-                                }
-                                break label2;
-                            }
-
-                        int a=engine(dbx,dwx,tx2);
-                        int[] dbx1 = new int[77];
-                        int[] tx3 = new int[17];
-                        System.arraycopy(dbx, 0, dbx1, 0, 77);
-                        System.arraycopy(tx2, 0, tx3, 0, 17);
-                        dbx1 = Secondary.auth_d(dbx1, tx3, a);
-                        tx3[a]+=1;
-                        for (int l = 1; l < 77; l++)
-                            if (dbx1[l] == 4) {
-                                int o2 = -999;
-                                if (o2 > o[i]) {
-                                    o[i] = o2;
-                                    s[0][i] = i2;
-                                    s[1][i] = a;
-                                    s[2][i] = 0;
-                                    s[3][i] = 0;
-                                    s[4][i] = 0;
-                                    s[5][i] = 0;
-                                    Game.p= Game.p+1;
-                                }
-                                continue label2;
-                            }
-
-                        label: for (int j2 = 1; j2 < 17; j2++)
-                            if (tx3[j2] < 4) {
-                                int[] dwx1 = new int[77];
-                                int[] tx4 = new int[17];
-                                System.arraycopy(dwx, 0, dwx1, 0, 77);
-                                System.arraycopy(tx3, 0, tx4, 0, 17);
-                                dwx1 = Secondary.auth_d(dwx1, tx4, j2);
-                                tx4[j2]+=1;
-                                for (int l = 1; l < 77; l++)
-                                    if (dwx1[l] == 4) {
-                                        int o2 = 999;
-                                        if (o2>o[i]) {
-                                            o[i] = o2;
-                                            s[0][i] = i2;
-                                            s[1][i] = a;
-                                            s[2][i] = j2;
-                                            s[3][i] = 0;
-                                            s[4][i] = 0;
-                                            s[5][i] = 0;
-                                            Game.p= Game.p+1;
-                                        }
-                                        break label;
-                                    }
-
-
-
-                                int b = AiRun.engine(dbx1, dwx1, tx4);
-                                int[] dbx2 = new int[77];
-                                int[] tx5 = new int[17];
-                                System.arraycopy(dbx1, 0, dbx2, 0, 77);
-                                System.arraycopy(tx4, 0, tx5, 0, 17);
-                                dbx2 = Secondary.auth_d(dbx2, tx5, b);
-                                tx5[b]+=1;
-                                for (int l = 1; l < 77; l++)
-                                    if (dbx2[l] == 4) {
-                                        int o2 = -999;
-                                        if (o2>o[i]) {
-                                            o[i] = o2;
-                                            s[0][i] = i2;
-                                            s[1][i] = a;
-                                            s[2][i] = j2;
-                                            s[3][i] = b;
-                                            s[4][i] = 0;
-                                            s[5][i] = 0;
-                                            Game.p= Game.p+1;
-                                        }
-                                        continue label;
-                                    }
-
-                                label3: for (int k = 1; k < 17; k++)
-                                    if (tx5[k] < 4) {
-                                        int[] dwx2 = new int[77];
-                                        int[] tx6 = new int[17];
-                                        System.arraycopy(dwx1, 0, dwx2, 0, 77);
-                                        System.arraycopy(tx5, 0, tx6, 0, 17);
-                                        dwx2 = Secondary.auth_d(dwx2, tx6, k);
-                                        tx6[k]+=1;
-                                        for (int l = 1; l < 77; l++)
-                                            if (dwx2[l] == 4) {
-                                                int o2 = 999;
-                                                if (o2 > o[i]) {
-                                                    o[i] = o2;
-                                                    s[0][i] = i2;
-                                                    s[1][i] = a;
-                                                    s[2][i] = j2;
-                                                    s[3][i] = b;
-                                                    s[4][i] = k;
-                                                    s[5][i] = 0;
-                                                    Game.p = Game.p + 1;
-                                                }
-                                                break label3;
-                                            }
-
-
-                                        int d = AiRun.engine(dbx2, dwx2, tx6);
-                                        int[] dbx3 = new int[77];
-                                        int[] tx7 = new int[17];
-                                        System.arraycopy(dbx2, 0, dbx3, 0, 77);
-                                        System.arraycopy(tx6, 0, tx7, 0, 17);
-                                        dbx3 = Secondary.auth_d(dbx3, tx7, d);
-                                        tx7[i]+=d;
-                                        for (int l = 1; l < 77; l++)
-                                            if (dbx3[l] == 4) {
-                                                int o2 = -999;
-                                                if (o2 > o[i]) {
-                                                    o[i] = o2;
-                                                    s[0][i] = i2;
-                                                    s[1][i] = a;
-                                                    s[2][i] = j2;
-                                                    s[3][i] = b;
-                                                    s[4][i] = k;
-                                                    s[5][i] = d;
-                                                    Game.p = Game.p + 1;
-                                                }
-                                                continue label3;
-                                            }
-
-                                        int o2 = analyze(dbx3, dwx2, tx7);
-                                        Game.p = Game.p + 1;
-                                        if (o2 > o[i]) {
-                                            o[i] = o2;
-                                            s[0][i] = i2;
-                                            s[1][i] = a;
-                                            s[2][i] = j2;
-                                            s[3][i] = b;
-                                            s[4][i] = k;
-                                            s[5][i] = d;
-                                        }
-
-
-
-                                    }
-
-                            }
-                    }
+            if ((depth == 2) || (depth == 4)) {
+                int i = engine(db, dw, t);
+                db = Secondary.auth_d(db, t, i);
+                for (int k = 1; k < 77; k++)
+                    if (db[k]==4)
+                        return -1000-depth;
+                t[i]++;
+                return analyze(db.clone(), dw.clone(), t.clone(), depth + 1, maxDepth);
             }
 
-        int min = 1000;
-        int[] k = new int[8];
-        for (int i = 1; i < 17; i++)
-            if ((o[i]<=min) & (o[i]!=-22222)) {
-                min = o[i];
-                k[0] = i;
-            }
-        if ((o[1]==999)  & (o[2]==999)  & (o[3]==999)  & (o[4]==999)  & (o[5]==999)  & (o[6]==999)  & (o[7]==999)  & (o[8]==999)  & (o[9]==999)  & (o[10]==999)  & (o[11]==999)  & (o[12]==999)  & (o[13]==999)  & (o[14]==999)  & (o[15]==999)  & (o[16]==999))
-            k[0]=engine(db1,dw1,t1);
-        k[1]=min;
-        k[2]=s[0][k[0]];
-        k[3]=s[1][k[0]];
-        k[4]=s[2][k[0]];
-        k[5]=s[3][k[0]];
-        k[6]=s[4][k[0]];
-        k[7]=s[5][k[0]];
-        return k;
+            return 0;
 
     }
 
@@ -508,162 +366,106 @@ public class AiRun {
         return a;
     }
 
-    public static int[] tree_2(int[] db,int[] dw,int[] t)
-    {
-        //Копирование массивов
+   public static int[] InfAuth(int[] db, int[] t, int l) {
         int[] db1 = new int[77];
         System.arraycopy(db, 0, db1, 0, 77);
-        int[] dw1 = new int[77];
-        System.arraycopy(dw, 0, dw1, 0, 77);
-        int[] t1 = new int[17];
+        int[] t1 = new int[77];
         System.arraycopy(t, 0, t1, 0, 17);
-        //
-        Game.p=0;
-        int[] o = new int[17];
-        int[][] s = new int[6][17];
-        for (int i = 1; i < 17; i++)
-            o[i]=-22222;
-        for (int i = 1; i < 17; i++)
-            if (t1[i] <4) {
-                System.out.print(i+" ");
-                int[] dbx = new int[77];
-                int[] tx = new int[17];
-                System.arraycopy(db1, 0, dbx, 0, 77);
-                System.arraycopy(t1, 0, tx, 0, 17);
-                dbx = Secondary.auth_d(dbx, tx, i);
-                tx[i]+=1;
-                for (int l = 1; l < 77; l++)
-                    if (dbx[l] == 4) {
-                        int[] k = new int[7];
-                        k[0] = i;
-                        k[1]=-999;
-                        Game.p= Game.p+1;
-                        return k;
-                    }
+        int x, y = 0, z;
+        x = (l - 1) % 4 + 1;
+        if ((l >= 1) & (l <= 4))
+            y = 4;
+        if ((l >= 5) & (l <= 8))
+            y = 3;
+        if ((l >= 9) & (l <= 12))
+            y = 2;
+        if ((l >= 13) & (l <= 16))
+            y = 1;
+        z = t1[l];
 
-
-                label2: for (int i2 = 1; i2 < 17; i2++)
-                    if (tx[i2] < 4) {
-                        int[] dwx = new int[77];
-                        int[] tx2 = new int[17];
-                        System.arraycopy(dw1, 0, dwx, 0, 77);
-                        System.arraycopy(tx, 0, tx2, 0, 17);
-                        dwx = Secondary.auth_d(dwx, tx2, i2);
-                        tx2[i2]+=1;
-                        for (int l = 1; l < 77; l++)
-                            if (dwx[l] == 4) {
-                                int o2 = 999;
-                                if (o2>o[i]) {
-                                    o[i] = o2;
-                                    s[0][i]= i2;
-                                    s[1][i] = 0;
-                                    s[2][i] = 0;
-                                    s[3][i] = 0;
-                                    Game.p= Game.p+1;
-                                }
-                                break label2;
-                            }
-
-                        int a=engine(dbx,dwx,tx2);
-                        int[] dbx1 = new int[77];
-                        int[] tx3 = new int[17];
-                        System.arraycopy(dbx, 0, dbx1, 0, 77);
-                        System.arraycopy(tx2, 0, tx3, 0, 17);
-                        dbx1 = Secondary.auth_d(dbx1, tx3, a);
-                        tx3[a]+=1;
-                        for (int l = 1; l < 77; l++)
-                            if (dbx1[l] == 4) {
-                                int o2 = -999;
-                                if (o2 > o[i]) {
-                                    o[i] = o2;
-                                    s[0][i] = i2;
-                                    s[1][i] = a;
-                                    s[2][i] = 0;
-                                    s[3][i] = 0;
-                                    Game.p= Game.p+1;
-                                }
-                                continue label2;
-                            }
-
-                        label: for (int j2 = 1; j2 < 17; j2++)
-                            if (tx3[j2] < 4) {
-                                int[] dwx1 = new int[77];
-                                int[] tx4 = new int[17];
-                                System.arraycopy(dwx, 0, dwx1, 0, 77);
-                                System.arraycopy(tx3, 0, tx4, 0, 17);
-                                dwx1 = Secondary.auth_d(dwx1, tx4, j2);
-                                tx4[j2]+=1;
-                                for (int l = 1; l < 77; l++)
-                                    if (dwx1[l] == 4) {
-                                        int o2 = 999;
-                                        if (o2>o[i]) {
-                                            o[i] = o2;
-                                            s[0][i] = i2;
-                                            s[1][i] = a;
-                                            s[2][i] = j2;
-                                            s[3][i] = 0;
-                                            Game.p= Game.p+1;
-                                        }
-                                        break label;
-                                    }
-
-
-
-                                int b = AiRun.engine(dbx1, dwx1, tx4);
-                                int[] dbx2 = new int[77];
-                                int[] tx5 = new int[17];
-                                System.arraycopy(dbx1, 0, dbx2, 0, 77);
-                                System.arraycopy(tx4, 0, tx5, 0, 17);
-                                dbx2 = Secondary.auth_d(dbx2, tx5, b);
-                                tx5[b]+=1;
-                                for (int l = 1; l < 77; l++)
-                                    if (dbx2[l] == 4) {
-                                        int o2 = -999;
-                                        if (o2>o[i]) {
-                                            o[i] = o2;
-                                            s[0][i] = i2;
-                                            s[1][i] = a;
-                                            s[2][i] = j2;
-                                            s[3][i] = b;
-                                            Game.p= Game.p+1;
-                                        }
-                                        continue label;
-                                    }
-
-
-                                int o2 = analyze(dbx2, dwx1, tx5);
-                                Game.p = Game.p + 1;
-                                if (o2 > o[i]) {
-                                    o[i] = o2;
-                                    s[0][i] = i2;
-                                    s[1][i] = a;
-                                    s[2][i] = j2;
-                                    s[3][i] = b;
-
-                                }
-
-
-
-                            }
-
-                    }
+        for (int i = 1; i < 5; i++)
+            if ((y == i) & (z == 1)) {
+                db1[i] += -1;
             }
+        for (int i = 1; i < 5; i++) {
+            if ((x == i) & (z == 1))
+                db1[i + 4] += -1;
+        }
+        if ((5 - x == y) & (z == 1))
+            db1[9] += -1;
 
-        int min = 1000;
-        int[] k = new int[8];
-        for (int i = 1; i < 17; i++)
-            if ((o[i]<=min) & (o[i]!=-22222)) {
-                min = o[i];
-                k[0] = i;
-            }
-        if ((o[1]==999)  & (o[2]==999)  & (o[3]==999)  & (o[4]==999)  & (o[5]==999)  & (o[6]==999)  & (o[7]==999)  & (o[8]==999)  & (o[9]==999)  & (o[10]==999)  & (o[11]==999)  & (o[12]==999)  & (o[13]==999)  & (o[14]==999)  & (o[15]==999)  & (o[16]==999))
-            k[0]=engine(db1,dw1,t1);
-        k[1]=min;
-        k[2]=s[0][k[0]];
-        k[3]=s[1][k[0]];
-        k[4]=s[2][k[0]];
-        k[5]=s[3][k[0]];
-        return k;
+        if ((x == y) & (z == 1))
+            db1[10] += -1;
 
+        for (int i = 1; i < 5; i++) {
+            if ((y == i) & (z == 2))
+                db1[10 + i] = db1[10 + i] - 1;
+        }
+        for (int i = 1; i < 5; i++) {
+            if ((x == i) & (z == 2))
+                db1[i + 14] = db1[i + 14] - 1;
+        }
+        if ((5 - x == y) & (z == 2))
+            db1[19] = db1[19] - 1;
+
+        if ((x == y) & (z == 2))
+            db1[20] = db1[20] - 1;
+
+        for (int i = 1; i < 5; i++)
+            if ((y == i) & (z == 3))
+                db1[i + 20] = db1[i + 20] - 1;
+
+        for (int i = 1; i < 5; i++)
+            if ((x == i) & (z == 3))
+                db1[i + 24] = db1[i + 24] - 1;
+
+        if ((5 - x == y) & (z == 3))
+            db1[29] = db1[29] - 1;
+
+        if ((x == y) & (z == 3))
+            db1[30] = db1[30] - 1;
+
+        for (int i = 1; i < 5; i++) {
+            if ((y == i) & (z == 4))
+                db1[i + 30] = db1[i + 30] - 1;
+        }
+        for (int i = 1; i < 5; i++) {
+            if ((x == i) & (z == 4))
+                db1[i + 34] = db1[i + 34] - 1;
+        }
+        if ((5 - x == y) & (z == 4))
+            db1[39] = db1[39] - 1;
+
+        if ((x == y) & (z == 4))
+            db1[40] = db1[40] - 1;
+
+        for (int i = 1; i < 5; i++) {
+            if ((x == i) & (5 - y == z))
+                db1[40 + i] = db1[40 + i] - 1;
+            if ((x == i) & (y == z))
+                db1[44 + i] = db1[44 + i] - 1;
+            if ((y == 5 - i) & (x == z))
+                db1[48 + i] = db1[48 + i] - 1;
+            if ((y == 5 - i) & (5 - x == z))
+                db1[52 + i] = db1[52 + i] - 1;
+        }
+
+        if ((x == z) & (x == 5 - y))
+            db1[57] = db1[57] - 1;
+
+        if ((x == 5 - z) & (x == y))
+            db1[58] = db1[58] - 1;
+
+        if ((y == z) & (x == 5 - y))
+            db1[59] = db1[59] - 1;
+
+        if ((x == z) & (x == y))
+            db1[60] = db1[60] - 1;
+
+        db1[l + 60] = db1[l + 60] - 1;
+
+
+
+        return db1;
     }
 }

@@ -2,7 +2,7 @@ package ai;
 
 public class Secondary {
 
-    static int[] auth_d(int[] db, int[] t, int l) {
+   public static int[] auth_d(int[] db, int[] t, int l) {
         int[] db1 = new int[77];
         System.arraycopy(db, 0, db1, 0, 77);
         int[] t1 = new int[77];
