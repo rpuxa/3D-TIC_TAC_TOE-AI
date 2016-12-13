@@ -129,7 +129,7 @@ public class AiRun {
        int anl=0;
         for (int j = 1; j < 17; j++)
             for (int i = 1; i < 4; i++)
-            if (((t1[i]<3) && (i==1)) || ((t1[i]<2) && (i==2)) || ((t1[i]==0) && (i==3)))
+            if (((t1[j]<3) && (i==1)) || ((t1[j]<2) && (i==2)) || ((t1[j]==0) && (i==3)))
             {
                 int[] tx = new int[77];
                 System.arraycopy(t1, 0, tx, 0, 17);
@@ -145,7 +145,7 @@ public class AiRun {
 
         for (int j = 1; j < 17; j++)
             for (int i = 1; i < 4; i++)
-                if (((t1[i]<3) && (i==1)) || ((t1[i]<2) && (i==2)) || ((t1[i]==0) && (i==3)))
+                if (((t1[j]<3) && (i==1)) || ((t1[j]<2) && (i==2)) || ((t1[j]==0) && (i==3)))
                 {
                     int[] tx = new int[77];
                     System.arraycopy(t1, 0, tx, 0, 17);
@@ -209,7 +209,7 @@ public class AiRun {
         return 0;
     }
 
-    public static int analyze(int[] db, int[] dw, int[] t, int depth, int maxDepth) {
+    public static int analyze(int[] db, int[] dw, int[] t, int depth, int maxDepth,int[] move) {
         int lastMove = 0;
         if (depth == 0) {
             int min = 10000;
@@ -224,11 +224,12 @@ public class AiRun {
                 }
                 lastMove=i;
                 db = Secondary.auth_d(db, t, i);
+                move[depth]=i;
                 for (int k = 1; k < 77; k++)
                     if (db[k] == 4)
                         return i;
                 t[i]++;
-                int result = analyze(db.clone(), dw.clone(), t.clone(), depth + 1, maxDepth);
+                int result = analyze(db.clone(), dw.clone(), t.clone(), depth + 1, maxDepth,move);
                 if (result < min) {
                     min = result;
                     resultMove = i;
@@ -239,8 +240,10 @@ public class AiRun {
         }
 
         if (depth == maxDepth) {
-            return analyzeMaxDepth(db, dw, t);
-
+            int asd=analyzeMaxDepth(db, dw, t);
+            if (asd==60)
+                System.out.print("");
+            return asd;
         }
 
         if ((depth == 1) || (depth == 3) || (depth == 5)) {
@@ -254,11 +257,12 @@ public class AiRun {
                 }
                 lastMove=i;
                 dw = Secondary.auth_d(dw, t, i);
+                move[depth]=i;
                 for (int k = 1; k < 77; k++)
                     if (dw[k] == 4)
                         return 1000-depth;
                 t[i]++;
-                int result = analyze(db.clone(), dw.clone(), t.clone(), depth + 1, maxDepth);
+                int result = analyze(db.clone(), dw.clone(), t.clone(), depth + 1, maxDepth,move);
                 if (result > max)
                     max = result;
             }
@@ -269,11 +273,12 @@ public class AiRun {
             if ((depth == 2) || (depth == 4)) {
                 int i = engine(db, dw, t);
                 db = Secondary.auth_d(db, t, i);
+                move[depth]=i;
                 for (int k = 1; k < 77; k++)
                     if (db[k]==4)
                         return -1000-depth;
                 t[i]++;
-                return analyze(db.clone(), dw.clone(), t.clone(), depth + 1, maxDepth);
+                return analyze(db.clone(), dw.clone(), t.clone(), depth + 1, maxDepth,move);
             }
 
             return 0;

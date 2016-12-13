@@ -81,7 +81,6 @@ public class Game {
         while (true) {
             int playerColumn = readLimitedInt("номер столбца", first ? 0 : 1,16);
             auth(playerColumn, 0);
-            System.out.println(AiRun.analyzeMaxDepth(db,dw,t));
             first=false;
             if (AiRun.win(db, dw) == 1) {
                 System.out.println("Вы Выиграли!");
@@ -101,7 +100,8 @@ public class Game {
                 auth(aiColumn, 1);
             } else {
                 System.out.println("Идет анализ ходов ...");
-                int k = (MAXIMAL == difficultyLevel) ? AiRun.analyze(db, dw, t,0,6) : AiRun.analyze(db, dw, t,0,6);
+                int[] move = {0,0,0,0,0,0};
+                int k = (MAXIMAL == difficultyLevel) ? AiRun.analyze(db, dw, t,0,6,move) : AiRun.analyze(db, dw, t,0,6,move);
                 aiColumn = k;
                 System.out.println();
                 auth(aiColumn, 1);
