@@ -181,32 +181,16 @@ import java.util.Map;
         for (int k=41;k<61;k++)
             if ((db1[k]==1) & (dw1[k]==0))
                 anl+=-1;
-
-        if (win(db,dw)==-1)
-            anl=-1004;
-        if (win(db,dw)==1)
-            anl=996;
         return anl;
     }
 
     public static int win(int[] db,int[] dw)
     {
-        boolean a = false;
         for (int k=1;k<77;k++)
             if (dw[k] == 4)
-            {
-                a = true;
-                break;
-            }
-        if (a)
             return 1;
         for (int k=1;k<77;k++)
             if (db[k] == 4)
-            {
-                a = true;
-                break;
-            }
-        if (a)
             return -1;
         return 0;
     }
@@ -236,6 +220,7 @@ import java.util.Map;
                 state.db=db;
                 state.dw=dw;
                 state.depth=depth;
+                System.out.println(states.get(state));
                 if (states.get(state)==null) {
                     result = analyze(db.clone(), dw.clone(), t.clone(), depth + 1, maxDepth, move);
                     states.put(state, result);
