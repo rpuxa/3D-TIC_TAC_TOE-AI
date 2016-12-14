@@ -1,10 +1,12 @@
 package ai;
 
-import run.Game;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
-import java.lang.reflect.Array;
+  public class AiRun {
 
-public class AiRun {
+    static Map<StateInfo,Integer> states = new HashMap<StateInfo,Integer>();
 
     public static int engine(int[] db,int[] dw,int[] t)
     {
@@ -210,7 +212,9 @@ public class AiRun {
     }
 
     public static int analyze(int[] db, int[] dw, int[] t, int depth, int maxDepth,int[] move) {
+        int result;
         int lastMove = 0;
+        StateInfo state = new StateInfo(db, dw, depth);
         if (depth == 0) {
             int min = 10000;
             int resultMove = 0;
@@ -229,7 +233,15 @@ public class AiRun {
                     if (db[k] == 4)
                         return i;
                 t[i]++;
-                int result = analyze(db.clone(), dw.clone(), t.clone(), depth + 1, maxDepth,move);
+                state.db=db;
+                state.dw=dw;
+                state.depth=depth;
+                if (states.get(state)==null) {
+                    result = analyze(db.clone(), dw.clone(), t.clone(), depth + 1, maxDepth, move);
+                    states.put(state, result);
+                }
+                else
+                    result = states.get(state);
                 if (result < min) {
                     min = result;
                     resultMove = i;
@@ -239,12 +251,10 @@ public class AiRun {
             return resultMove;
         }
 
-        if (depth == maxDepth) {
-            int asd=analyzeMaxDepth(db, dw, t);
-            if (asd==60)
-                System.out.print("");
-            return asd;
-        }
+        if (depth == maxDepth)
+            return analyzeMaxDepth(db, dw, t);
+
+
 
         if ((depth == 1) || (depth == 3) || (depth == 5)) {
             int max=-10000;
@@ -262,7 +272,15 @@ public class AiRun {
                     if (dw[k] == 4)
                         return 1000-depth;
                 t[i]++;
-                int result = analyze(db.clone(), dw.clone(), t.clone(), depth + 1, maxDepth,move);
+                state.db=db;
+                state.dw=dw;
+                state.depth=depth;
+                if (states.get(state)==null) {
+                    result = analyze(db.clone(), dw.clone(), t.clone(), depth + 1, maxDepth, move);
+                    states.put(state, result);
+                }
+                else
+                    result = states.get(state);
                 if (result > max)
                     max = result;
             }
@@ -278,7 +296,16 @@ public class AiRun {
                     if (db[k]==4)
                         return -1000-depth;
                 t[i]++;
-                return analyze(db.clone(), dw.clone(), t.clone(), depth + 1, maxDepth,move);
+                state.db=db;
+                state.dw=dw;
+                state.depth=depth;
+                if (states.get(state)==null) {
+                    result = analyze(db.clone(), dw.clone(), t.clone(), depth + 1, maxDepth, move);
+                    states.put(state, result);
+                }
+                else
+                    result = states.get(state);
+                return result;
             }
 
             return 0;
@@ -469,5 +496,43 @@ public class AiRun {
 
 
         return db1;
+    }
+}
+
+  class StateInfo {
+
+    int[] db, dw;
+    int depth;
+
+   StateInfo(int[] db, int[] dw, int depth) {
+        this.db = db;
+        this.dw = dw;
+        this.depth = depth;
+    }
+
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (obj == null) return false;
+
+        StateInfo other = (StateInfo) obj;
+
+        for (int i = 0; i < db.length; ++i) {
+            if (db[i] != other.db[i]) return false;
+            if (dw[i] != other.db[i]) return false;
+        }
+
+        return true;
+    }
+
+    public int hashCode() {
+        int hash = 0;
+        for (int i = 0; i < db.length; ++i) {
+            hash += db[i];
+            hash *= 7;
+            hash += dw[i];
+            hash *= 7;
+        }
+        hash += depth*19;
+        return hash;
     }
 }
