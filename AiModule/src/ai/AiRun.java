@@ -204,7 +204,7 @@ import java.util.Map;
             for (int i = 1; i < 17; i++)
             if (t[i]<4)
             {
-                System.out.print(i+" ");
+//                System.out.print(i+" ");
                 if (lastMove!=0){
                 db=InfAuth(db, t, lastMove);
                 t[lastMove]+=-1;
@@ -217,7 +217,7 @@ import java.util.Map;
                         return i;
                 t[i]++;
                 StateInfo state = new StateInfo(db, dw, depth);
-                System.out.println(states.get(state));
+//                System.out.println(states.get(state));
                 if (states.get(state)==null) {
                     result = analyze(db.clone(), dw.clone(), t.clone(), depth + 1, maxDepth, move);
                     states.put(state, result);
@@ -228,7 +228,7 @@ import java.util.Map;
                     min = result;
                     resultMove = i;
                 }
-                System.out.println(states.size());
+//                System.out.println(states.size());
             }
             return resultMove;
         }
@@ -496,8 +496,10 @@ import java.util.Map;
 
         for (int i = 0; i < db.length; ++i) {
             if (db[i] != other.db[i]) return false;
-            if (dw[i] != other.db[i]) return false;
+            if (dw[i] != other.dw[i]) return false;
         }
+
+        if (depth != other.depth) return false;
 
         return true;
     }

@@ -119,24 +119,24 @@ public class Game {
                 auth(aiColumn, 1);
 
                 //Показ
-                if (true) {
-                    System.out.println("// Проанализировано " + p + " позиций, итог:");
-                    System.out.println("// Текущая оценка: " + AiRun.analyze(db, dw, t));
-                    System.out.print("// Оценка: " + k[1] + ", при возможных ходах:  ");
-                    if (k[2]!=0)
-                        if (k[3] == 0)
-                            System.out.println(k[2] + "#");
-                        else if (k[4] == 0)
-                            System.out.println(k[2] + "," + k[3] + "#");
-                        else if (k[5] == 0)
-                            System.out.println(k[2] + "," + k[3] + "  " + k[4] + "#");
-                        else {
-                            if (difficultyLevel == MAXIMAL)
-                                System.out.println(k[2] + "," + k[3] + "  " + k[4] + "," + k[5] + "  " + k[6] + "," + k[7]);
-                            else
-                                System.out.println(k[2] + "," + k[3] + "  " + k[4] + "," + k[5]);
-                        }
-                }
+//                if (true) {
+//                    System.out.println("// Проанализировано " + p + " позиций, итог:");
+//                    System.out.println("// Текущая оценка: " + AiRun.analyze(db, dw, t));
+//                    System.out.print("// Оценка: " + k[1] + ", при возможных ходах:  ");
+//                    if (k[2]!=0)
+//                        if (k[3] == 0)
+//                            System.out.println(k[2] + "#");
+//                        else if (k[4] == 0)
+//                            System.out.println(k[2] + "," + k[3] + "#");
+//                        else if (k[5] == 0)
+//                            System.out.println(k[2] + "," + k[3] + "  " + k[4] + "#");
+//                        else {
+//                            if (difficultyLevel == MAXIMAL)
+//                                System.out.println(k[2] + "," + k[3] + "  " + k[4] + "," + k[5] + "  " + k[6] + "," + k[7]);
+//                            else
+//                                System.out.println(k[2] + "," + k[3] + "  " + k[4] + "," + k[5]);
+//                        }
+//                }
             }
             System.out.println("Ход:");
             System.out.println(aiColumn);
