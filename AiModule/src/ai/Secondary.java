@@ -1,12 +1,8 @@
 package ai;
 
-public class Secondary {
+class Secondary {
 
-   public static int[] auth_d(int[] db, int[] t, int l) {
-        int[] db1 = new int[77];
-        System.arraycopy(db, 0, db1, 0, 77);
-        int[] t1 = new int[77];
-        System.arraycopy(t, 0, t1, 0, 17);
+    static int[] auth_d(int[] d, int[] t, int l) {
         int x, y = 0, z;
         x = (l - 1) % 4 + 1;
         if ((l >= 1) & (l <= 4))
@@ -17,91 +13,93 @@ public class Secondary {
             y = 2;
         if ((l >= 13) & (l <= 16))
             y = 1;
-        z = t1[l] + 1;
+        z = t[l] + 1;
 
         for (int i = 1; i < 5; i++)
             if ((y == i) & (z == 1)) {
-                db1[i] += 1;
+                d[i] += 1;
             }
         for (int i = 1; i < 5; i++) {
             if ((x == i) & (z == 1))
-                db1[i + 4] += 1;
+                d[i + 4] += 1;
         }
         if ((5 - x == y) & (z == 1))
-            db1[9] += 1;
+            d[9] += 1;
 
         if ((x == y) & (z == 1))
-            db1[10] += 1;
+            d[10] += 1;
 
         for (int i = 1; i < 5; i++) {
             if ((y == i) & (z == 2))
-                db1[10 + i] = db1[10 + i] + 1;
+                d[10 + i] = d[10 + i] + 1;
         }
         for (int i = 1; i < 5; i++) {
             if ((x == i) & (z == 2))
-                db1[i + 14] = db1[i + 14] + 1;
+                d[i + 14] = d[i + 14] + 1;
         }
         if ((5 - x == y) & (z == 2))
-            db1[19] = db1[19] + 1;
+            d[19] = d[19] + 1;
 
         if ((x == y) & (z == 2))
-            db1[20] = db1[20] + 1;
+            d[20] = d[20] + 1;
 
         for (int i = 1; i < 5; i++)
             if ((y == i) & (z == 3))
-                db1[i + 20] = db1[i + 20] + 1;
+                d[i + 20] = d[i + 20] + 1;
 
         for (int i = 1; i < 5; i++)
             if ((x == i) & (z == 3))
-                db1[i + 24] = db1[i + 24] + 1;
+                d[i + 24] = d[i + 24] + 1;
 
         if ((5 - x == y) & (z == 3))
-            db1[29] = db1[29] + 1;
+            d[29] = d[29] + 1;
 
         if ((x == y) & (z == 3))
-            db1[30] = db1[30] + 1;
+            d[30] = d[30] + 1;
 
         for (int i = 1; i < 5; i++) {
             if ((y == i) & (z == 4))
-                db1[i + 30] = db1[i + 30] + 1;
+                d[i + 30] = d[i + 30] + 1;
         }
         for (int i = 1; i < 5; i++) {
             if ((x == i) & (z == 4))
-                db1[i + 34] = db1[i + 34] + 1;
+                d[i + 34] = d[i + 34] + 1;
         }
         if ((5 - x == y) & (z == 4))
-            db1[39] = db1[39] + 1;
+            d[39] = d[39] + 1;
 
         if ((x == y) & (z == 4))
-            db1[40] = db1[40] + 1;
+            d[40] = d[40] + 1;
 
         for (int i = 1; i < 5; i++) {
             if ((x == i) & (5 - y == z))
-                db1[40 + i] = db1[40 + i] + 1;
+                d[40 + i] = d[40 + i] + 1;
             if ((x == i) & (y == z))
-                db1[44 + i] = db1[44 + i] + 1;
+                d[44 + i] = d[44 + i] + 1;
             if ((y == 5 - i) & (x == z))
-                db1[48 + i] = db1[48 + i] + 1;
+                d[48 + i] = d[48 + i] + 1;
             if ((y == 5 - i) & (5 - x == z))
-                db1[52 + i] = db1[52 + i] + 1;
+                d[52 + i] = d[52 + i] + 1;
         }
 
         if ((x == z) & (x == 5 - y))
-            db1[57] = db1[57] + 1;
+            d[57] = d[57] + 1;
 
         if ((x == 5 - z) & (x == y))
-            db1[58] = db1[58] + 1;
+            d[58] = d[58] + 1;
 
         if ((y == z) & (x == 5 - y))
-            db1[59] = db1[59] + 1;
+            d[59] = d[59] + 1;
 
         if ((x == z) & (x == y))
-            db1[60] = db1[60] + 1;
+            d[60] = d[60] + 1;
 
-        db1[l + 60] = db1[l + 60] + 1;
+        d[l + 60] = d[l + 60] + 1;
 
-        return db1;
+        return d;
     }
+
+
 
     private static boolean[] line(int[] db, int[] t) {
         int[] dw1 = new int[77];
@@ -114,7 +112,7 @@ public class Secondary {
             if (t1[i] < 3) {
                 t1[i] += 1;
                 int[] dwx = new int[77];
-                System.arraycopy(auth_d(dw1, t1, i), 0, dwx, 0, 77);
+                System.arraycopy(auth_d(dw1.clone(), t1, i), 0, dwx, 0, 77);
                 //Условие
                 for (int k = 1; k < 77; k++) {
                     if (dwx[k] == 4) {
@@ -141,7 +139,7 @@ public class Secondary {
         for (int i = 1; i < 17; i++)
             if (t1[i] != 4) {
                 int[] dbx = new int[77];
-                System.arraycopy(auth_d(db1, t1, i), 0, dbx, 0, 77);
+                System.arraycopy(auth_d(db1.clone(), t1, i), 0, dbx, 0, 77);
                 //Условие
                 for (int k = 1; k < 77; k++) {
                     if (dbx[k] == 4) {
@@ -176,7 +174,7 @@ public class Secondary {
                 a = 0;
                 b = 0;
                 int[] dbx = new int[77];
-                System.arraycopy(auth_d(db1, t1, i), 0, dbx, 0, 77);
+                System.arraycopy(auth_d(db1.clone(), t1, i), 0, dbx, 0, 77);
                 int[] tx = new int[17];
                 System.arraycopy(t1, 0, tx, 0, 17);
                 tx[i] += 1;
@@ -186,7 +184,7 @@ public class Secondary {
                 for (int j = 1; j < 17; j++)
                     if (t1[j] != 4) {
                         int[] dbx1 = new int[77];
-                        System.arraycopy(auth_d(dbx, tx, j), 0, dbx1, 0, 77);
+                        System.arraycopy(auth_d(dbx.clone(), tx, j), 0, dbx1, 0, 77);
                         for (int k = 1; k < 77; k++)
                             if (dbx1[k] == 4)
                                 a++;
@@ -218,7 +216,7 @@ public class Secondary {
                 a = 0;
                 b = 0;
                 int[] dwx = new int[77];
-                System.arraycopy(auth_d(dw1, t1, i), 0, dwx, 0, 77);
+                System.arraycopy(auth_d(dw1.clone(), t1, i), 0, dwx, 0, 77);
                 int[] tx = new int[17];
                 System.arraycopy(t1, 0, tx, 0, 17);
                 tx[i] += 1;
@@ -228,7 +226,7 @@ public class Secondary {
                 for (int j = 1; j < 17; j++)
                     if (t1[j] != 4) {
                         int[] dwx1 = new int[77];
-                        System.arraycopy(auth_d(dwx, tx, j), 0, dwx1, 0, 77);
+                        System.arraycopy(auth_d(dwx.clone(), tx, j), 0, dwx1, 0, 77);
                         for (int k = 1; k < 77; k++)
                             if (dwx1[k] == 4) {
                                 a = a + 1;
@@ -276,7 +274,7 @@ public class Secondary {
                 a = 0;
                 b = 0;
                 int[] dbx = new int[77];
-                System.arraycopy(auth_d(db1, t1, i), 0, dbx, 0, 77);
+                System.arraycopy(auth_d(db1.clone(), t1, i), 0, dbx, 0, 77);
                 int[] tx = new int[17];
                 System.arraycopy(t1, 0, tx, 0, 17);
                 tx[i] += 1;
@@ -286,7 +284,7 @@ public class Secondary {
                 for (int j = 1; j < 17; j++)
                     if (t1[j] != 4) {
                         int[] dbx1 = new int[77];
-                        System.arraycopy(auth_d(dbx, tx, j), 0, dbx1, 0, 77);
+                        System.arraycopy(auth_d(dbx.clone(), tx, j), 0, dbx1, 0, 77);
                         for (int k = 1; k < 77; k++)
                             if (dbx1[k] == 4)
                                 a++;
@@ -315,7 +313,7 @@ public class Secondary {
                 a = 0;
                 b = 0;
                 int[] dwx = new int[77];
-                System.arraycopy(auth_d(dw, t1, i), 0, dwx, 0, 77);
+                System.arraycopy(auth_d(dw.clone(), t1, i), 0, dwx, 0, 77);
                 int[] tx = new int[17];
                 System.arraycopy(t1, 0, tx, 0, 17);
                 tx[i] += 1;
@@ -325,7 +323,7 @@ public class Secondary {
                 for (int j = 1; j < 17; j++)
                     if (t1[j] != 4) {
                         int[] dwx1 = new int[77];
-                        System.arraycopy(auth_d(dwx, tx, j), 0, dwx1, 0, 77);
+                        System.arraycopy(auth_d(dwx.clone(), tx, j), 0, dwx1, 0, 77);
                         for (int k = 1; k < 77; k++)
                             if (dwx1[k] == 4)
                                 a = a + 1;
@@ -357,7 +355,7 @@ public class Secondary {
             if ((t1[i] != 4) & (!fw1[i]) & (!fb1[i])) {
                 b = 0;
                 int[] dbx = new int[77];
-                System.arraycopy(auth_d(db1, t1, i), 0, dbx, 0, 77);
+                System.arraycopy(auth_d(db1.clone(), t1, i), 0, dbx, 0, 77);
                 for (int k = 41; k < 61; k++)
                     if ((dbx[k] == 2) & (dw[k] == 0))
                         b++;
@@ -386,7 +384,7 @@ public class Secondary {
             if ((t1[i] != 4) & (!fw1[i]) & (!fb1[i])) {
                 b = 0;
                 int[] dbx = new int[77];
-                System.arraycopy(auth_d(db1, t1, i), 0, dbx, 0, 77);
+                System.arraycopy(auth_d(db1.clone(), t1, i), 0, dbx, 0, 77);
                 for (int k = 41; k < 61; k++)
                     if ((dbx[k] == 2) & (dw[k] == 0))
                         b++;
@@ -415,7 +413,7 @@ public class Secondary {
             if ((t1[i] != 4) & (!fw1[i]) & (!fb1[i])) {
                 b = 0;
                 int[] dbx = new int[77];
-                System.arraycopy(auth_d(db1, t1, i), 0, dbx, 0, 77);
+                System.arraycopy(auth_d(db1.clone(), t1, i), 0, dbx, 0, 77);
                 for (int k = 1; k < 77; k++)
                     if ((dbx[k] == 3) & (db[k] == 0))
                         b++;
@@ -471,13 +469,13 @@ public class Secondary {
         for (int i = 1; i < 17; i++)
            if ((t1[i] < 2) & (!fb1[i]) & (t1[j] < 4) & (!fb1[j]) & (j!=i)) {
                int[] dbx = new int[77];
-               System.arraycopy(auth_d(db1, t1, j), 0, dbx, 0, 77);
+               System.arraycopy(auth_d(db1.clone(), t1, j), 0, dbx, 0, 77);
                int[] tx = new int[17];
                System.arraycopy(t1, 0, tx, 0, 17);
                tx[i] += 1;
-               dbx = auth_d(dbx, tx, i);
+               dbx = auth_d(dbx.clone(), tx, i);
                tx[i] += 1;
-               dbx = auth_d(dbx, tx, i);
+               dbx = auth_d(dbx.clone(), tx, i);
                int a=0;
                for (int k = 1; k < 77; k++)
                    if (dbx[k] == 4) {

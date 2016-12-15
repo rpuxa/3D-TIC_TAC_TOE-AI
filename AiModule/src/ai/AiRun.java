@@ -8,112 +8,105 @@ import java.util.Map;
 
     static Map<StateInfo,Integer> states = new HashMap<>();
 
-    public static int engine(int[] db,int[] dw,int[] t)
-    {
-        //Копирование массивов
-        int[] db1 = new int[77];
-        System.arraycopy(db,0,db1,0,77);
-        int[] dw1 = new int[77];
-        System.arraycopy(dw,0,dw1,0,77);
-        int[] t1 = new int[77];
-        System.arraycopy(t,0,t1,0,17);
-        //
+      public static int engine(int[] db,int[] dw,int[] t)
+      {
+          //Атака 4 в ряд
+          int a=0;
+          int b =Secondary.attack(db,t);
+          if (b!=0)
+              a = b;
 
-        //Атака 4 в ряд
-        int a=0;
-        int b =Secondary.attack(db1,t1);
-        if (b!=0)
-            a = b;
+          //Защита 4 в ряд
+          if (a==0) {
+              b = Secondary.attack(dw, t);
+              if (b != 0)
+                  a = b;
+          }
 
-        //Защита 4 в ряд
-        if (a==0) {
-            b = Secondary.attack(dw1, t1);
-            if (b != 0)
-                a = b;
-        }
+          // Создание узлов
+          if (a==0) {
+              b = Secondary.lip_a(db, dw, t);
+              if (b != 0)
+                  a = b;
+          }
 
-        // Создание узлов
-        if (a==0) {
-            b = Secondary.lip_a(db1, dw1, t1);
-            if (b != 0)
-                a = b;
-        }
+          // Защита от узлов
+          if (a==0) {
+              b = Secondary.lip_d(db, dw, t);
+              if (b != 0)
+                  a = b;
+          }
 
-        // Защита от узлов
-        if (a==0) {
-            b = Secondary.lip_d(db1, dw1, t1);
-            if (b != 0)
-                a = b;
-        }
+          // Создание двойных линий
+          if (a==0) {
+              b = Secondary.double_(db, dw, t);
+              if (b != 0)
+                  a = b;
+          }
 
-        // Создание двойных линий
-        if (a==0) {
-            b = Secondary.double_(db1, dw1, t1);
-            if (b != 0)
-                a = b;
-        }
-
-        // Защита от двойных линий
-        if (a==0) {
-            b = Secondary.double_(dw1, db1, t1);
-            if (b != 0)
-                a = b;
-        }
+          // Защита от двойных линий
+          if (a==0) {
+              b = Secondary.double_(dw, db, t);
+              if (b != 0)
+                  a = b;
+          }
 
 
-        // Атака на 3 недостижимых в ряд
-        if (a==0) {
-            b = Secondary.d3_a(db1, dw1, t1);
-            if (b != 0)
-                a = b;
-        }
+          // Атака на 3 недостижимых в ряд
+          if (a==0) {
+              b = Secondary.d3_a(db, dw, t);
+              if (b != 0)
+                  a = b;
+          }
 
-        // Защита от 3 недостижимых в ряд
-        if (a==0) {
-            b = Secondary.d3_d(db1, dw1, t1);
-            if (b != 0)
-                a = b;
-        }
+          // Защита от 3 недостижимых в ряд
+          if (a==0) {
+              b = Secondary.d3_d(db, dw, t);
+              if (b != 0)
+                  a = b;
+          }
 
-        // Дебют
-        if (a==0) {
-            b = Secondary.debut(t1);
-            if (b != 0)
-                a = b;
-        }
+          // Дебют
+          if (a==0) {
+              b = Secondary.debut(t);
+              if (b != 0)
+                  a = b;
+          }
 
-        // Захват 2 диагоналей
-        if (a==0) {
-            b = Secondary.dc2(db1, dw1, t1);
-            if (b != 0)
-                a = b;
-        }
+          // Захват 2 диагоналей
+          if (a==0) {
+              b = Secondary.dc2(db, dw, t);
+              if (b != 0)
+                  a = b;
+          }
 
-        // Захват 1 диагонали
-        if (a==0) {
-            b = Secondary.dc1(db1, dw1, t1);
-            if (b != 0)
-                a = b;
-        }
+          // Захват 1 диагонали
+          if (a==0) {
+              b = Secondary.dc1(db, dw, t);
+              if (b != 0)
+                  a = b;
+          }
 
-        // Защита от 3 в ряд
-        if (a==0) {
-            b = Secondary.def_3(db1, dw1, t1);
-            if (b != 0)
-                a = b;
-        }
+          // Защита от 3 в ряд
+          if (a==0) {
+              b = Secondary.def_3(db, dw, t);
+              if (b != 0)
+                  a = b;
+          }
 
-        // Ранддом
-        if (a==0) {
-            b = Secondary.rand(db1, dw1, t1);
-            if (b != 0)
-                a = b;
-        }
+          // Ранддом
+          if (a==0) {
+              b = Secondary.rand(db, dw, t);
+              if (b != 0)
+                  a = b;
+          }
 
-        return a;
-    }
+          return a;
+      }
 
-    public static int analyzeMaxDepth(int[] db,int[] dw,int[] t)
+
+
+      public static int analyzeMaxDepth(int[] db,int[] dw,int[] t)
     {
         //Копирование массивов
         int[] db1 = new int[77];
@@ -137,7 +130,7 @@ import java.util.Map;
                 System.arraycopy(t1, 0, tx, 0, 17);
                 tx[j]+=i;
                 int[] dwx = new int[77];
-                System.arraycopy(Secondary.auth_d(dw1, tx, j), 0, dwx, 0, 77);
+                System.arraycopy(Secondary.auth_d(dw1.clone(), tx, j), 0, dwx, 0, 77);
                 for (int k = 1; k < 77; k++)
                     if (dwx[k] == 4)
                     {
@@ -153,7 +146,7 @@ import java.util.Map;
                     System.arraycopy(t1, 0, tx, 0, 17);
                     tx[j]+=i;
                     int[] dwx = new int[77];
-                    System.arraycopy(Secondary.auth_d(db1, tx, j), 0, dwx, 0, 77);
+                    System.arraycopy(Secondary.auth_d(db1.clone(), tx, j), 0, dwx, 0, 77);
                     for (int k = 1; k < 77; k++)
                         if (dwx[k] == 4)
                         {
@@ -204,20 +197,19 @@ import java.util.Map;
             for (int i = 1; i < 17; i++)
             if (t[i]<4)
             {
-//                System.out.print(i+" ");
+               System.out.print(i+" ");
                 if (lastMove!=0){
                 db=InfAuth(db, t, lastMove);
                 t[lastMove]+=-1;
                 }
                 lastMove=i;
-                db = Secondary.auth_d(db, t, i);
+                db = Secondary.auth_d(db.clone(), t, i);
                 move[depth]=i;
                 for (int k = 1; k < 77; k++)
                     if (db[k] == 4)
                         return i;
                 t[i]++;
                 StateInfo state = new StateInfo(db, dw, depth);
-//                System.out.println(states.get(state));
                 if (states.get(state)==null) {
                     result = analyze(db.clone(), dw.clone(), t.clone(), depth + 1, maxDepth, move);
                     states.put(state, result);
@@ -228,7 +220,6 @@ import java.util.Map;
                     min = result;
                     resultMove = i;
                 }
-//                System.out.println(states.size());
             }
             return resultMove;
         }
@@ -248,7 +239,7 @@ import java.util.Map;
                     t[lastMove] += -1;
                 }
                 lastMove=i;
-                dw = Secondary.auth_d(dw, t, i);
+                dw = Secondary.auth_d(dw.clone(), t, i);
                 move[depth]=i;
                 for (int k = 1; k < 77; k++)
                     if (dw[k] == 4)
@@ -269,8 +260,8 @@ import java.util.Map;
 
 
             if ((depth == 2) || (depth == 4)) {
-                int i = engine(db, dw, t);
-                db = Secondary.auth_d(db, t, i);
+                int i = engine(db.clone(), dw.clone(), t.clone());
+                db = Secondary.auth_d(db.clone(), t, i);
                 move[depth]=i;
                 for (int k = 1; k < 77; k++)
                     if (db[k]==4)
@@ -373,7 +364,7 @@ import java.util.Map;
         return a;
     }
 
-   public static int[] InfAuth(int[] db, int[] t, int l) {
+   private static int[] InfAuth(int[] db, int[] t, int l) {
         int[] db1 = new int[77];
         System.arraycopy(db, 0, db1, 0, 77);
         int[] t1 = new int[77];

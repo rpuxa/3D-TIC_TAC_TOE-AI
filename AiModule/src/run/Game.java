@@ -77,13 +77,6 @@ public class Game {
 
     private void run(DifficultyLevel difficultyLevel) {
         while (true) {
-            for (int i=1;i<77;++i)
-            {
-                db[i]=0;
-                dw[i]=0;
-            }
-            for (int i=1;i<17;++i)
-            t[i]=0;
             int playerColumn = readLimitedInt("номер столбца", first ? 0 : 1,16);
             auth(playerColumn, 0);
             first=false;
@@ -92,7 +85,7 @@ public class Game {
                 break;
             }
 
-            int aiColumn = 0;
+            int aiColumn;
 
             if (VERY_EASY == difficultyLevel) {
                 aiColumn = AiRun.engine_1(db,dw,t);
@@ -101,42 +94,15 @@ public class Game {
                 aiColumn = AiRun.engine_2(db,dw,t);
                 auth(aiColumn, 1);
             } else if (AVERAGE == difficultyLevel) {
-                aiColumn = AiRun.engine(db,dw,t);
+                aiColumn = AiRun.engine(db.clone(),dw.clone(),t.clone());
                 auth(aiColumn, 1);
             } else {
                 System.out.println("Идет анализ ходов ...");
                 int[] move = {0,0,0,0,0,0};
+                aiColumn = (MAXIMAL == difficultyLevel) ? AiRun.analyze(db.clone(), dw.clone(), t.clone(),0,6,move) : AiRun.analyze(db.clone(), dw.clone(), t.clone(),0,4,move);
                 System.out.println();
-                long st = System.currentTimeMillis();
-                AiRun.analyze(db.clone(), dw.clone(), t.clone(),0,6,move);
-                long firstTime = System.currentTimeMillis() - st;
-
-                st = System.currentTimeMillis();
-                AiRun.analyze(db.clone(), dw.clone(), t.clone(),0,6,move);
-                long secondTime = System.currentTimeMillis() - st;
-
-                System.err.println(firstTime + " " + secondTime);
                 auth(aiColumn, 1);
 
-                //Показ
-//                if (true) {
-//                    System.out.println("// Проанализировано " + p + " позиций, итог:");
-//                    System.out.println("// Текущая оценка: " + AiRun.analyze(db, dw, t));
-//                    System.out.print("// Оценка: " + k[1] + ", при возможных ходах:  ");
-//                    if (k[2]!=0)
-//                        if (k[3] == 0)
-//                            System.out.println(k[2] + "#");
-//                        else if (k[4] == 0)
-//                            System.out.println(k[2] + "," + k[3] + "#");
-//                        else if (k[5] == 0)
-//                            System.out.println(k[2] + "," + k[3] + "  " + k[4] + "#");
-//                        else {
-//                            if (difficultyLevel == MAXIMAL)
-//                                System.out.println(k[2] + "," + k[3] + "  " + k[4] + "," + k[5] + "  " + k[6] + "," + k[7]);
-//                            else
-//                                System.out.println(k[2] + "," + k[3] + "  " + k[4] + "," + k[5]);
-//                        }
-//                }
             }
             System.out.println("Ход:");
             System.out.println(aiColumn);
