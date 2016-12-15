@@ -1,12 +1,12 @@
 package ai;
 
-import java.util.Arrays;
+
 import java.util.HashMap;
 import java.util.Map;
 
   public class AiRun {
 
-    static Map<StateInfo,Integer> states = new HashMap<StateInfo,Integer>();
+    static Map<StateInfo,Integer> states = new HashMap<>();
 
     public static int engine(int[] db,int[] dw,int[] t)
     {
@@ -198,7 +198,6 @@ import java.util.Map;
     public static int analyze(int[] db, int[] dw, int[] t, int depth, int maxDepth,int[] move) {
         int result;
         int lastMove = 0;
-        StateInfo state = new StateInfo(db, dw, depth);
         if (depth == 0) {
             int min = 10000;
             int resultMove = 0;
@@ -217,9 +216,7 @@ import java.util.Map;
                     if (db[k] == 4)
                         return i;
                 t[i]++;
-                state.db=db;
-                state.dw=dw;
-                state.depth=depth;
+                StateInfo state = new StateInfo(db, dw, depth);
                 System.out.println(states.get(state));
                 if (states.get(state)==null) {
                     result = analyze(db.clone(), dw.clone(), t.clone(), depth + 1, maxDepth, move);
@@ -231,7 +228,7 @@ import java.util.Map;
                     min = result;
                     resultMove = i;
                 }
-
+                System.out.println(states.size());
             }
             return resultMove;
         }
@@ -257,9 +254,7 @@ import java.util.Map;
                     if (dw[k] == 4)
                         return 1000-depth;
                 t[i]++;
-                state.db=db;
-                state.dw=dw;
-                state.depth=depth;
+                StateInfo state = new StateInfo(db, dw, depth);
                 if (states.get(state)==null) {
                     result = analyze(db.clone(), dw.clone(), t.clone(), depth + 1, maxDepth, move);
                     states.put(state, result);
@@ -281,9 +276,7 @@ import java.util.Map;
                     if (db[k]==4)
                         return -1000-depth;
                 t[i]++;
-                state.db=db;
-                state.dw=dw;
-                state.depth=depth;
+                StateInfo state = new StateInfo(db, dw, depth);
                 if (states.get(state)==null) {
                     result = analyze(db.clone(), dw.clone(), t.clone(), depth + 1, maxDepth, move);
                     states.put(state, result);

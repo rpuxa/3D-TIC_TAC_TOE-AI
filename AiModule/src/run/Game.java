@@ -2,7 +2,6 @@ package run;
 
 import ai.AiRun;
 import ai.DifficultyLevel;
-import ai.Secondary;
 
 import static ai.difficulty.DifficultyLevels.*;
 
@@ -81,7 +80,15 @@ public class Game {
         //
 
         //
+
         while (true) {
+            for (int i=1;i<77;++i)
+            {
+                db[i]=0;
+                dw[i]=0;
+            }
+            for (int i=1;i<17;++i)
+            t[i]=0;
             int playerColumn = readLimitedInt("номер столбца", first ? 0 : 1,16);
             auth(playerColumn, 0);
             first=false;
@@ -104,9 +111,16 @@ public class Game {
             } else {
                 System.out.println("Идет анализ ходов ...");
                 int[] move = {0,0,0,0,0,0};
-                int k = (MAXIMAL == difficultyLevel) ? AiRun.analyze(db.clone(), dw.clone(), t.clone(),0,6,move) : AiRun.analyze(db.clone(), dw.clone(), t.clone(),0,6,move);
-                aiColumn = k;
                 System.out.println();
+                long st = System.currentTimeMillis();
+                AiRun.analyze(db.clone(), dw.clone(), t.clone(),0,6,move);
+                long firstTime = System.currentTimeMillis() - st;
+
+                st = System.currentTimeMillis();
+                AiRun.analyze(db.clone(), dw.clone(), t.clone(),0,6,move);
+                long secondTime = System.currentTimeMillis() - st;
+
+                System.err.println(firstTime + " " + secondTime);
                 auth(aiColumn, 1);
 
             }
