@@ -482,6 +482,7 @@ import java.util.Map;
     public boolean equals(Object obj) {
         if (obj == this) return true;
         if (obj == null) return false;
+        if (!(obj instanceof StateInfo)) return false;
 
         StateInfo other = (StateInfo) obj;
 
