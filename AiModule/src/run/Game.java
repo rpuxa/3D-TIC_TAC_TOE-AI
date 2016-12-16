@@ -71,7 +71,7 @@ public class Game {
 
     private final static int WIN_LINES_COUNT = 77;
     private final static int COLUMNS_COUNT = 17;
-    private final static int MAX_ANALYZE_DEPTH = 6;
+    private final static int HARD_MAX_ANALYZE_DEPTH = 4, MAX_ANALYZE_DEPTH = 6;
 
     private void run(DifficultyLevel difficultyLevel) {
         int[] aiWinLineCounts = new int[WIN_LINES_COUNT];
@@ -99,8 +99,12 @@ public class Game {
                 aiColumn = AiRun.engine(aiWinLineCounts, playerWinLineCounts, columnHeights);
             } else {
                 System.out.println("Идет анализ ходов ...");
+
                 int[] move = new int[MAX_ANALYZE_DEPTH];
-                aiColumn = (MAXIMAL == difficultyLevel) ? AiRun.analyze(db.clone(), dw.clone(), t.clone(),0,6,move) : AiRun.analyze(db.clone(), dw.clone(), t.clone(),0,4,move);
+
+                int maxAnalyzeDepth = (HARD == difficultyLevel ? HARD_MAX_ANALYZE_DEPTH : MAX_ANALYZE_DEPTH);
+                aiColumn = AiRun.analyze(aiWinLineCounts.clone(), playerWinLineCounts.clone(), columnHeights.clone(),0, maxAnalyzeDepth, move);
+
                 System.out.println();
             }
 
