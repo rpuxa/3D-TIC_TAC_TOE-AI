@@ -106,7 +106,7 @@ import java.util.Map;
 
 
 
-      public static int analyzeMaxDepth(int[] db,int[] dw,int[] t)
+      private static int analyzeMaxDepth(int[] db,int[] dw,int[] t)
     {
         //Копирование массивов
         int[] db1 = new int[77];
@@ -221,6 +221,7 @@ import java.util.Map;
                     resultMove = i;
                 }
             }
+            states.clear();
             return resultMove;
         }
 
@@ -229,7 +230,7 @@ import java.util.Map;
 
 
 
-        if ((depth == 1) || (depth == 3) || (depth == 5)) {
+        if ((depth == 1) || (depth == 3) || (depth == 5) || (depth == 7)) {
             int max=-10000;
             for (int i = 1; i < 17; i++)
                 if (t[i]<4)
@@ -259,7 +260,7 @@ import java.util.Map;
         }
 
 
-            if ((depth == 2) || (depth == 4)) {
+            if ((depth == 2) || (depth == 4) || (depth == 6)) {
                 int i = engine(db.clone(), dw.clone(), t.clone());
                 db = Secondary.auth_d(db.clone(), t, i);
                 move[depth]=i;
@@ -491,9 +492,7 @@ import java.util.Map;
             if (dw[i] != other.dw[i]) return false;
         }
 
-        if (depth != other.depth) return false;
-
-        return true;
+        return depth == other.depth;
     }
 
     public int hashCode() {

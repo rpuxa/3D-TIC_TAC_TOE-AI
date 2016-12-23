@@ -6,9 +6,17 @@ import ai.DifficultyLevel;
 import static ai.difficulty.DifficultyLevels.*;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Game {
+
+    static Map<Pos,Integer> pos = new HashMap<>();
+
+    private static int[] db = new int[77], dw = new int[77], t = new int[17];
+
+    private static boolean first = true;
 
     public static void main(String[] args) {
         try (Scanner scanner = new Scanner(System.in)) {
@@ -18,11 +26,11 @@ public class Game {
 
     private final Scanner scanner;
 
-    Game(Scanner scanner) {
+    private Game(Scanner scanner) {
         this.scanner = scanner;
     }
 
-    int readLimitedInt(String name, int minLimit, int maxLimit) {
+    private int readLimitedInt(String name, int minLimit, int maxlimit) {
         int value;
 
         System.out.println("Введите " + name + ":");
@@ -31,7 +39,7 @@ public class Game {
             try {
                 value = scanner.nextInt();
 
-                if (value < minLimit || maxLimit < value) {
+                if (value < minLimit || maxlimit < value) {
                     throw new IOException();
                 }
 
@@ -51,7 +59,7 @@ public class Game {
     }
 
 
-    void start() {
+    private void start() {
         for (DifficultyLevel difficultyLevel : LEVELS) {
             System.out.println(difficultyLevel);
         }
@@ -69,52 +77,46 @@ public class Game {
         run(difficultyLevel);
     }
 
-    private final static int WIN_LINES_COUNT = 77;
-    private final static int COLUMNS_COUNT = 17;
-    private final static int HARD_MAX_ANALYZE_DEPTH = 4, MAX_ANALYZE_DEPTH = 6;
-
     private void run(DifficultyLevel difficultyLevel) {
-        int[] aiWinLineCounts = new int[WIN_LINES_COUNT];
-        int[] playerWinLineCounts = new int[WIN_LINES_COUNT];
-        int[] columnHeights = new int[COLUMNS_COUNT];
-
-        boolean first = true;
+        int MovesCount=0;
+        States[] state = new States[63];
         while (true) {
-            int playerColumn = readLimitedInt("номер столбца", first ? 0 : 1, COLUMNS_COUNT - 1);
-            first = false;
-
-            auth(playerColumn, playerWinLineCounts, columnHeights);
-            if (AiRun.win(aiWinLineCounts, playerWinLineCounts) == 1) {
-                System.out.println("Вы выиграли!");
+            int playerColumn = readLimitedInt("номер столбца", first ? 0 : 1,16);
+            auth(playerColumn, 0);
+            first=false;
+            if (AiRun.win(db, dw) == 1) {
+                System.out.println("Вы Выиграли!");
                 break;
             }
 
-            int aiColumn = 0;
+            state[MovesCount] = new States(db,dw);
+            MovesCount++;
+
+            int aiColumn;
 
             if (VERY_EASY == difficultyLevel) {
-                aiColumn = AiRun.engine_1(aiWinLineCounts, playerWinLineCounts, columnHeights);
+                aiColumn = AiRun.engine_1(db,dw,t);
+                auth(aiColumn, 1);
             } else if (EASY == difficultyLevel) {
-                aiColumn = AiRun.engine_2(aiWinLineCounts, playerWinLineCounts, columnHeights);
+                aiColumn = AiRun.engine_2(db,dw,t);
+                auth(aiColumn, 1);
             } else if (AVERAGE == difficultyLevel) {
-                aiColumn = AiRun.engine(aiWinLineCounts, playerWinLineCounts, columnHeights);
+                aiColumn = AiRun.engine(db.clone(),dw.clone(),t.clone());
+                auth(aiColumn, 1);
             } else {
                 System.out.println("Идет анализ ходов ...");
-
-                int[] move = new int[MAX_ANALYZE_DEPTH];
-
-                int maxAnalyzeDepth = (HARD == difficultyLevel ? HARD_MAX_ANALYZE_DEPTH : MAX_ANALYZE_DEPTH);
-                aiColumn = AiRun.analyze(aiWinLineCounts.clone(), playerWinLineCounts.clone(), columnHeights.clone(),0, maxAnalyzeDepth, move);
-
+                int[] move = {0,0,0,0,0,0};
+                aiColumn = (MAXIMAL == difficultyLevel) ? AiRun.analyze(db.clone(), dw.clone(), t.clone(),0,6,move) : AiRun.analyze(db.clone(), dw.clone(), t.clone(),0,4,move);
                 System.out.println();
+                auth(aiColumn, 1);
+
             }
-
-            auth(aiColumn, aiWinLineCounts, columnHeights);
-
-            System.out.println("Номер столбца, выбранный компьютером:");
+            System.out.println("Ход:");
             System.out.println(aiColumn);
 
-            if (AiRun.win(aiWinLineCounts, playerWinLineCounts) == -1) {
-                System.out.println("Компьютер выиграл!");
+            if (AiRun.win(db,dw)==-1)
+            {
+                System.out.println("Компьютер Выиграл!");
                 break;
             }
 
@@ -127,9 +129,9 @@ public class Game {
         } catch (IOException cannotHappen) { }
     }
 
-    private void auth(int n, int[] winLineCounts, int[] columnHeights) {
+    private void auth(int n,int color) {
 
-        int x, y = 0;
+        int x, y = 0, z;
         x=(n-1)%4+1;
         if ((n >= 1) & (n <= 4))
             y = 4;
@@ -139,92 +141,222 @@ public class Game {
             y = 2;
         if ((n >= 13) & (n <= 16))
             y = 1;
-
-        columnHeights[n]++;
-        int z = columnHeights[n];
-
-        for (int i = 1; i < 5; i++)
-            if ((y == i) & (z == 1)) {
-                winLineCounts[i] = winLineCounts[i] + 1;
+        z = t[n] + 1;
+        if (color==0) {
+            for (int i = 1; i < 5; i++)
+                if ((y == i) & (z == 1)) {
+                    dw[i] = dw[i] + 1;
+                }
+            for (int i = 1; i < 5; i++) {
+                if ((x == i) & (z == 1))
+                    dw[i + 4] = dw[i + 4] + 1;
             }
-        for (int i = 1; i < 5; i++) {
-            if ((x == i) & (z == 1))
-                winLineCounts[i + 4] = winLineCounts[i + 4] + 1;
+            if ((5 - x == y) & (z == 1))
+                dw[9] = dw[9] + 1;
+
+            if ((x == y) & (z == 1))
+                dw[10] = dw[10] + 1;
+
+            for (int i = 1; i < 5; i++) {
+                if ((y == i) & (z == 2))
+                    dw[10 + i] = dw[10 + i] + 1;
+            }
+            for (int i = 1; i < 5; i++) {
+                if ((x == i) & (z == 2))
+                    dw[i + 14] = dw[i + 14] + 1;
+            }
+            if ((5 - x == y) & (z == 2))
+                dw[19] = dw[19] + 1;
+
+            if ((x == y) & (z == 2))
+                dw[20] = dw[20] + 1;
+
+            for (int i = 1; i < 5; i++) {
+                if ((y == i) & (z == 3))
+                    dw[i + 20] = dw[i + 20] + 1;
+            }
+            for (int i = 1; i < 5; i++) {
+                if ((x == i) & (z == 3))
+                    dw[i + 24] = dw[i + 24] + 1;
+            }
+            if ((5 - x == y) & (z == 3))
+                dw[29] = dw[29] + 1;
+
+            if ((x == y) & (z == 3))
+                dw[30] = dw[30] + 1;
+
+            for (int i = 1; i < 5; i++) {
+                if ((y == i) & (z == 4))
+                    dw[i + 30] = dw[i + 30] + 1;
+            }
+            for (int i = 1; i < 5; i++) {
+                if ((x == i) & (z == 4))
+                    dw[i + 34] = dw[i + 34] + 1;
+            }
+            if ((5 - x == y) & (z == 4))
+                dw[39] = dw[39] + 1;
+
+            if ((x == y) & (z == 4))
+                dw[40] = dw[40] + 1;
+
+            for (int i = 1; i < 5; i++) {
+                if ((x == i) & (5 - y == z))
+                    dw[40 + i] = dw[40 + i] + 1;
+                if ((x == i) & (y == z))
+                    dw[44 + i] = dw[44 + i] + 1;
+                if ((y == 5 - i) & (x == z))
+                    dw[48 + i] = dw[48 + i] + 1;
+                if ((y == 5 - i) & (5 - x == z))
+                    dw[52 + i] = dw[52 + i] + 1;
+            }
+
+            if ((x == z) & (x == 5 - y))
+                dw[57] = dw[57] + 1;
+
+            if ((x == 5 - z) & (x == y))
+                dw[58] = dw[58] + 1;
+
+            if ((y == z) & (x == 5 - y))
+                dw[59] = dw[59] + 1;
+
+            if ((x == z) & (x == y))
+                dw[60] = dw[60] + 1;
+
+            dw[n + 60] = dw[n + 60] + 1;
+            t[n] = t[n] + 1;
         }
-        if ((5 - x == y) & (z == 1))
-            winLineCounts[9] = winLineCounts[9] + 1;
+        if (color==1) {
+            for (int i = 1; i < 5; i++)
+                if ((y == i) & (z == 1)) {
+                    db[i] = db[i] + 1;
+                }
+            for (int i = 1; i < 5; i++) {
+                if ((x == i) & (z == 1))
+                    db[i + 4] = db[i + 4] + 1;
+            }
+            if ((5 - x == y) & (z == 1))
+                db[9] = db[9] + 1;
 
-        if ((x == y) & (z == 1))
-            winLineCounts[10] = winLineCounts[10] + 1;
+            if ((x == y) & (z == 1))
+                db[10] = db[10] + 1;
 
-        for (int i = 1; i < 5; i++) {
-            if ((y == i) & (z == 2))
-                winLineCounts[10 + i] = winLineCounts[10 + i] + 1;
+            for (int i = 1; i < 5; i++) {
+                if ((y == i) & (z == 2))
+                    db[10 + i] = db[10 + i] + 1;
+            }
+            for (int i = 1; i < 5; i++) {
+                if ((x == i) & (z == 2))
+                    db[i + 14] = db[i + 14] + 1;
+            }
+            if ((5 - x == y) & (z == 2))
+                db[19] = db[19] + 1;
+
+            if ((x == y) & (z == 2))
+                db[20] = db[20] + 1;
+
+            for (int i = 1; i < 5; i++) {
+                if ((y == i) & (z == 3))
+                    db[i + 20] = db[i + 20] + 1;
+            }
+            for (int i = 1; i < 5; i++) {
+                if ((x == i) & (z == 3))
+                    db[i + 24] = db[i + 24] + 1;
+            }
+            if ((5 - x == y) & (z == 3))
+                db[29] = db[29] + 1;
+
+            if ((x == y) & (z == 3))
+                db[30] = db[30] + 1;
+
+            for (int i = 1; i < 5; i++) {
+                if ((y == i) & (z == 4))
+                    db[i + 30] = db[i + 30] + 1;
+            }
+            for (int i = 1; i < 5; i++) {
+                if ((x == i) & (z == 4))
+                    db[i + 34] = db[i + 34] + 1;
+            }
+            if ((5 - x == y) & (z == 4))
+                db[39] = db[39] + 1;
+
+            if ((x == y) & (z == 4))
+                db[40] = db[40] + 1;
+
+            for (int i = 1; i < 5; i++) {
+                if ((x == i) & (5 - y == z))
+                    db[40 + i] = db[40 + i] + 1;
+                if ((x == i) & (y == z))
+                    db[44 + i] = db[44 + i] + 1;
+                if ((y == 5 - i) & (x == z))
+                    db[48 + i] = db[48 + i] + 1;
+                if ((y == 5 - i) & (5 - x == z))
+                    db[52 + i] = db[52 + i] + 1;
+            }
+
+            if ((x == z) & (x == 5 - y))
+                db[57] = db[57] + 1;
+
+            if ((x == 5 - z) & (x == y))
+                db[58] = db[58] + 1;
+
+            if ((y == z) & (x == 5 - y))
+                db[59] = db[59] + 1;
+
+            if ((x == z) & (x == y))
+                db[60] = db[60] + 1;
+
+            db[n + 60] = db[n + 60] + 1;
+            t[n] = t[n] + 1;
         }
-        for (int i = 1; i < 5; i++) {
-            if ((x == i) & (z == 2))
-                winLineCounts[i + 14] = winLineCounts[i + 14] + 1;
-        }
-        if ((5 - x == y) & (z == 2))
-            winLineCounts[19] = winLineCounts[19] + 1;
-
-        if ((x == y) & (z == 2))
-            winLineCounts[20] = winLineCounts[20] + 1;
-
-        for (int i = 1; i < 5; i++) {
-            if ((y == i) & (z == 3))
-                winLineCounts[i + 20] = winLineCounts[i + 20] + 1;
-        }
-        for (int i = 1; i < 5; i++) {
-            if ((x == i) & (z == 3))
-                winLineCounts[i + 24] = winLineCounts[i + 24] + 1;
-        }
-        if ((5 - x == y) & (z == 3))
-            winLineCounts[29] = winLineCounts[29] + 1;
-
-        if ((x == y) & (z == 3))
-            winLineCounts[30] = winLineCounts[30] + 1;
-
-        for (int i = 1; i < 5; i++) {
-            if ((y == i) & (z == 4))
-                winLineCounts[i + 30] = winLineCounts[i + 30] + 1;
-        }
-        for (int i = 1; i < 5; i++) {
-            if ((x == i) & (z == 4))
-                winLineCounts[i + 34] = winLineCounts[i + 34] + 1;
-        }
-        if ((5 - x == y) & (z == 4))
-            winLineCounts[39] = winLineCounts[39] + 1;
-
-        if ((x == y) & (z == 4))
-            winLineCounts[40] = winLineCounts[40] + 1;
-
-        for (int i = 1; i < 5; i++) {
-            if ((x == i) & (5 - y == z))
-                winLineCounts[40 + i] = winLineCounts[40 + i] + 1;
-            if ((x == i) & (y == z))
-                winLineCounts[44 + i] = winLineCounts[44 + i] + 1;
-            if ((y == 5 - i) & (x == z))
-                winLineCounts[48 + i] = winLineCounts[48 + i] + 1;
-            if ((y == 5 - i) & (5 - x == z))
-                winLineCounts[52 + i] = winLineCounts[52 + i] + 1;
-        }
-
-        if ((x == z) & (x == 5 - y))
-            winLineCounts[57] = winLineCounts[57] + 1;
-
-        if ((x == 5 - z) & (x == y))
-            winLineCounts[58] = winLineCounts[58] + 1;
-
-        if ((y == z) & (x == 5 - y))
-            winLineCounts[59] = winLineCounts[59] + 1;
-
-        if ((x == z) & (x == y))
-            winLineCounts[60] = winLineCounts[60] + 1;
-
-        winLineCounts[n + 60] = winLineCounts[n + 60] + 1;
     }
 }
 
+class Pos {
 
+    private int[] db, dw;
+    private int anl,count;
+
+    Pos(int[] db, int[] dw, int count, int anl) {
+        this.db = db;
+        this.dw = dw;
+        this.count = count;
+        this.anl = anl;
+    }
+
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (obj == null) return false;
+        if (!(obj instanceof run.Pos)) return false;
+
+        run.Pos other = (run.Pos) obj;
+
+        for (int i = 0; i < db.length; ++i) {
+            if (db[i] != other.db[i]) return false;
+            if (dw[i] != other.dw[i]) return false;
+        }
+
+        return count == other.count && anl == other.anl;
+    }
+
+    public int hashCode() {
+        int hash = 0;
+        for (int i = 0; i < db.length; ++i) {
+            hash += db[i];
+            hash *= 7;
+            hash += dw[i];
+            hash *= 7;
+        }
+        hash += count*19;
+        hash += anl*13;
+        return hash;
+    }
+}
+
+class States{
+
+    States(int[] db, int[] dw) {
+        int[] db1 = db;
+        int[] dw1 = dw;
+    }
+}
 
