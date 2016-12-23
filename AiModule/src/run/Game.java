@@ -18,7 +18,7 @@ public class Game {
 
     private static boolean first = true;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         try (Scanner scanner = new Scanner(System.in)) {
             new Game(scanner).start();
         }
@@ -26,7 +26,7 @@ public class Game {
 
     private final Scanner scanner;
 
-    private Game(Scanner scanner) {
+    private Game(Scanner scanner) throws IOException {
         this.scanner = scanner;
     }
 
@@ -78,8 +78,6 @@ public class Game {
     }
 
     private void run(DifficultyLevel difficultyLevel) {
-        int MovesCount=0;
-        States[] state = new States[63];
         while (true) {
             int playerColumn = readLimitedInt("номер столбца", first ? 0 : 1,16);
             auth(playerColumn, 0);
@@ -88,9 +86,6 @@ public class Game {
                 System.out.println("Вы Выиграли!");
                 break;
             }
-
-            state[MovesCount] = new States(db,dw);
-            MovesCount++;
 
             int aiColumn;
 
@@ -106,7 +101,13 @@ public class Game {
             } else {
                 System.out.println("Идет анализ ходов ...");
                 int[] move = {0,0,0,0,0,0};
-                aiColumn = (MAXIMAL == difficultyLevel) ? AiRun.analyze(db.clone(), dw.clone(), t.clone(),0,6,move) : AiRun.analyze(db.clone(), dw.clone(), t.clone(),0,4,move);
+                Pos position = new Pos(db,dw);
+                if (pos.get(position)!=null) {
+                    aiColumn = (MAXIMAL == difficultyLevel) ? AiRun.analyze(db.clone(), dw.clone(), t.clone(), 0, 6, move) : AiRun.analyze(db.clone(), dw.clone(), t.clone(), 0, 4, move);
+                    pos.put(position,aiColumn);
+                }
+                else
+                    aiColumn = pos.get(position);
                 System.out.println();
                 auth(aiColumn, 1);
 
@@ -118,6 +119,8 @@ public class Game {
             {
                 System.out.println("Компьютер Выиграл!");
                 break;
+            }
+
             }
 
             System.out.println("------------");
@@ -313,14 +316,11 @@ public class Game {
 
 class Pos {
 
-    private int[] db, dw;
-    private int anl,count;
+    private int[] db,dw;
 
-    Pos(int[] db, int[] dw, int count, int anl) {
+    Pos(int[] db, int[] dw) {
         this.db = db;
         this.dw = dw;
-        this.count = count;
-        this.anl = anl;
     }
 
     public boolean equals(Object obj) {
@@ -335,7 +335,7 @@ class Pos {
             if (dw[i] != other.dw[i]) return false;
         }
 
-        return count == other.count && anl == other.anl;
+        return true;
     }
 
     public int hashCode() {
@@ -346,17 +346,6 @@ class Pos {
             hash += dw[i];
             hash *= 7;
         }
-        hash += count*19;
-        hash += anl*13;
         return hash;
     }
 }
-
-class States{
-
-    States(int[] db, int[] dw) {
-        int[] db1 = db;
-        int[] dw1 = dw;
-    }
-}
-
