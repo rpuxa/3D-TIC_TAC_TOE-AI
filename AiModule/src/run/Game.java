@@ -5,7 +5,7 @@ import ai.DifficultyLevel;
 
 import static ai.difficulty.DifficultyLevels.*;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -19,6 +19,7 @@ public class Game {
     private static boolean first = true;
 
     public static void main(String[] args) throws IOException {
+
         try (Scanner scanner = new Scanner(System.in)) {
             new Game(scanner).start();
         }
@@ -79,6 +80,14 @@ public class Game {
 
     private void run(DifficultyLevel difficultyLevel) {
         while (true) {
+            //вывод
+            try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Map.dat")))
+            {
+                pos = (Map<Pos,Integer>)ois.readObject();
+            } catch(Exception ex){
+                ex.printStackTrace();
+            }
+            //
             int playerColumn = readLimitedInt("номер столбца", first ? 0 : 1,16);
             auth(playerColumn, 0);
             first=false;
@@ -123,8 +132,15 @@ public class Game {
 
             }
 
-            System.out.println("------------");
+        try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Map.dat")))
+        {
+            oos.writeObject(pos);
         }
+        catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
+            System.out.println("------------");
+
 
         System.out.println("Нажмите Enter для завершения игры.");
         try {
@@ -314,7 +330,7 @@ public class Game {
     }
 }
 
-class Pos {
+class Pos implements Serializable {
 
     private int[] db,dw;
 
