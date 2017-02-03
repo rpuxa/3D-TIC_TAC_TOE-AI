@@ -81,12 +81,17 @@ public class Game {
     private void run(DifficultyLevel difficultyLevel) {
         while (true) {
             //вывод
-            try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Map.dat")))
-            {
-                pos = (Map<Pos,Integer>)ois.readObject();
-            } catch(Exception ex){
-                ex.printStackTrace();
+
+            File file = new File("Map.dat");
+            if (file.exists()) {
+                try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Map.dat")))
+                {
+                    pos = (Map<Pos,Integer>)ois.readObject();
+                } catch(Exception ex){
+                    ex.printStackTrace();
+                }
             }
+
             //
             int playerColumn = readLimitedInt("номер столбца", first ? 0 : 1,16);
             auth(playerColumn, 0);
