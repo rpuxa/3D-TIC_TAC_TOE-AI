@@ -19,7 +19,6 @@ public class Game {
     private static boolean first = true;
 
     public static void main(String[] args) throws IOException {
-
         try (Scanner scanner = new Scanner(System.in)) {
             new Game(scanner).start();
         }
@@ -84,18 +83,17 @@ public class Game {
 
             File file = new File("Map.dat");
             if (file.exists()) {
-                try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Map.dat")))
-                {
-                    pos = (Map<Pos,Integer>)ois.readObject();
-                } catch(Exception ex){
+                try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Map.dat"))) {
+                    pos = (Map<Pos, Integer>) ois.readObject();
+                } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             }
 
             //
-            int playerColumn = readLimitedInt("номер столбца", first ? 0 : 1,16);
+            int playerColumn = readLimitedInt("номер столбца", first ? 0 : 1, 16);
             auth(playerColumn, 0);
-            first=false;
+            first = false;
             if (AiRun.win(db, dw) == 1) {
                 System.out.println("Вы Выиграли!");
                 break;
@@ -104,23 +102,23 @@ public class Game {
             int aiColumn;
 
             if (VERY_EASY == difficultyLevel) {
-                aiColumn = AiRun.engine_1(db,dw,t);
+                aiColumn = AiRun.engine_1(db, dw, t);
                 auth(aiColumn, 1);
             } else if (EASY == difficultyLevel) {
-                aiColumn = AiRun.engine_2(db,dw,t);
+                aiColumn = AiRun.engine_2(db, dw, t);
                 auth(aiColumn, 1);
             } else if (AVERAGE == difficultyLevel) {
-                aiColumn = AiRun.engine(db.clone(),dw.clone(),t.clone());
+                aiColumn = AiRun.engine(db.clone(), dw.clone(), t.clone());
                 auth(aiColumn, 1);
             } else {
                 System.out.println("Идет анализ ходов ...");
-                int[] move = {0,0,0,0,0,0};
-                Pos position = new Pos(db,dw);
-                if (pos.get(position)!=null) {
+                int[] move = {0, 0, 0, 0, 0, 0};
+                Pos position = new Pos(db, dw);
+                System.out.println(pos.get(position));
+                if (pos.get(position) == null) {
                     aiColumn = (MAXIMAL == difficultyLevel) ? AiRun.analyze(db.clone(), dw.clone(), t.clone(), 0, 6, move) : AiRun.analyze(db.clone(), dw.clone(), t.clone(), 0, 4, move);
-                    pos.put(position,aiColumn);
-                }
-                else
+                    pos.put(position, aiColumn);
+                } else
                     aiColumn = pos.get(position);
                 System.out.println();
                 auth(aiColumn, 1);
@@ -129,24 +127,20 @@ public class Game {
             System.out.println("Ход:");
             System.out.println(aiColumn);
 
-            if (AiRun.win(db,dw)==-1)
-            {
+            if (AiRun.win(db, dw) == -1) {
                 System.out.println("Компьютер Выиграл!");
                 break;
             }
 
-            }
 
-        try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Map.dat")))
-        {
-            oos.writeObject(pos);
-        }
-        catch(Exception ex){
-            System.out.println(ex.getMessage());
-        }
+            try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Map.dat"))) {
+                oos.writeObject(pos);
+            } catch (Exception ex) {
+                System.out.println(ex.getMessage());
+            }
             System.out.println("------------");
 
-
+        }
         System.out.println("Нажмите Enter для завершения игры.");
         try {
             System.in.read();
