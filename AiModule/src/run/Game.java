@@ -78,16 +78,16 @@ public class Game {
     }
 
     private void run(DifficultyLevel difficultyLevel) {
-        File file = new File("Map.dat");
+        File file = new File("BookOf.positions");
         if (file.exists()) {
-            try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("Map.dat"))) {
+            try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("BookOf.positions"))) {
                 pos = (Map<Pos, Integer>) ois.readObject();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
         while (true) {
-            int playerColumn = readLimitedInt("номер столбца", first ? 0 : 1, 16);
+           int playerColumn = readLimitedInt("номер столбца", first ? 0 : 1, 16);
             auth(playerColumn, 0);
             first = false;
             if (AiRun.win(db, dw) == 1) {
@@ -107,12 +107,12 @@ public class Game {
                 aiColumn = AiRun.engine(db.clone(), dw.clone(), t.clone());
                 auth(aiColumn, 1);
             } else {
-                System.out.println("Идет анализ ходов ...");
                 int[] move = {0, 0, 0, 0, 0, 0};
                 Pos position = new Pos(db, dw);
-                System.out.println(pos.get(position));
                 if (pos.get(position) == null) {
-                    aiColumn = (MAXIMAL == difficultyLevel) ? AiRun.analyze(db.clone(), dw.clone(), t.clone(), 0, 6, move) : AiRun.analyze(db.clone(), dw.clone(), t.clone(), 0, 4, move);
+                    System.out.println("Идет анализ ходов ...");
+                    aiColumn = (MAXIMAL == difficultyLevel) ? AiRun.analyze(db.clone(), dw.clone(), t.clone(), 0, 6, move,999999) : AiRun.analyze(db.clone(), dw.clone(), t.clone(), 0, 4, move,999999);
+                    if (MAXIMAL == difficultyLevel)
                     pos.put(position, aiColumn);
                 } else
                     aiColumn = pos.get(position);
@@ -129,7 +129,7 @@ public class Game {
             }
 
 
-            try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Map.dat"))) {
+            try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("BookOf.positions"))) {
                 oos.writeObject(pos);
             } catch (Exception ex) {
                 System.out.println(ex.getMessage());
@@ -330,8 +330,8 @@ class Pos implements Serializable {
     private int[] db,dw;
 
     Pos(int[] db, int[] dw) {
-        this.db = db;
-        this.dw = dw;
+        this.db = db.clone();
+        this.dw = dw.clone();
     }
 
     public boolean equals(Object obj) {

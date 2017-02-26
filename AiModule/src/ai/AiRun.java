@@ -106,74 +106,64 @@ import java.util.Map;
 
 
 
-      private static int analyzeMaxDepth(int[] db,int[] dw,int[] t)
-    {
-        //Копирование массивов
-        int[] db1 = new int[77];
-        System.arraycopy(db, 0, db1, 0, 77);
-        int[] dw1 = new int[77];
-        System.arraycopy(dw, 0, dw1, 0, 77);
-        int[] t1 = new int[77];
-        System.arraycopy(t, 0, t1, 0, 17);
-        //
-       int [] fw = new int[17],fb = new int[17];
-        for (int i = 1; i < 17; i++) {
-            fw[i] = 0;
-            fb[i]=0;
-        }
-       int anl=0;
-        for (int j = 1; j < 17; j++)
-            for (int i = 1; i < 4; i++)
-            if (((t1[j]<3) && (i==1)) || ((t1[j]<2) && (i==2)) || ((t1[j]==0) && (i==3)))
-            {
-                int[] tx = new int[77];
-                System.arraycopy(t1, 0, tx, 0, 17);
-                tx[j]+=i;
-                int[] dwx = new int[77];
-                System.arraycopy(Secondary.auth_d(dw1.clone(), tx, j), 0, dwx, 0, 77);
-                for (int k = 1; k < 77; k++)
-                    if (dwx[k] == 4)
-                    {
-                        fw[j]=i;
-                    }
-            }
+      private static int analyzeMaxDepth(int[] db,int[] dw,int[] t) {
+          //Копирование массивов
+          int[] db1 = new int[77];
+          System.arraycopy(db, 0, db1, 0, 77);
+          int[] dw1 = new int[77];
+          System.arraycopy(dw, 0, dw1, 0, 77);
+          int[] t1 = new int[77];
+          System.arraycopy(t, 0, t1, 0, 17);
+          //
+          int[] fw = new int[17], fb = new int[17];
+          for (int i = 1; i < 17; i++) {
+              fw[i] = 0;
+              fb[i] = 0;
+          }
+          int anl = 0;
+          for (int j = 1; j < 17; j++)
+              for (int i = 1; i < 4; i++)
+                  if (((t1[j] < 3) && (i == 1)) || ((t1[j] < 2) && (i == 2)) || ((t1[j] == 0) && (i == 3))) {
+                      int[] tx = new int[77];
+                      System.arraycopy(t1, 0, tx, 0, 17);
+                      tx[j] += i;
+                      int[] dwx = new int[77];
+                      System.arraycopy(Secondary.auth_d(dw1.clone(), tx, j), 0, dwx, 0, 77);
+                      for (int k = 1; k < 77; k++)
+                          if (dwx[k] == 4) {
+                              fw[j] = i;
+                          }
+                  }
 
-        for (int j = 1; j < 17; j++)
-            for (int i = 1; i < 4; i++)
-                if (((t1[j]<3) && (i==1)) || ((t1[j]<2) && (i==2)) || ((t1[j]==0) && (i==3)))
-                {
-                    int[] tx = new int[77];
-                    System.arraycopy(t1, 0, tx, 0, 17);
-                    tx[j]+=i;
-                    int[] dwx = new int[77];
-                    System.arraycopy(Secondary.auth_d(db1.clone(), tx, j), 0, dwx, 0, 77);
-                    for (int k = 1; k < 77; k++)
-                        if (dwx[k] == 4)
-                        {
-                            fb[j]=i;
-                        }
-                }
-        for (int i = 1; i < 17; i++) {
-            if (fb[i] < fw[i])
-                anl += 50;
-            if (fb[i] > fw[i])
-                anl += -50;
-        }
-        for (int k=41;k<61;k++)
-            if ((dw1[k]==2) & (db1[k]==0))
-                anl+=5;
-
-        for (int k=41;k<61;k++)
-            if ((dw1[k]==1) & (db1[k]==0))
-                anl+=1;
-
-        for (int k=41;k<61;k++)
-            if ((db1[k]==2) & (dw1[k]==0))
-                anl+=-5;
-
-        for (int k=41;k<61;k++)
-            if ((db1[k]==1) & (dw1[k]==0))
-                anl+=-1;
+          for (int j = 1; j < 17; j++)
+              for (int i = 1; i < 4; i++)
+                  if (((t1[j] < 3) && (i == 1)) || ((t1[j] < 2) && (i == 2)) || ((t1[j] == 0) && (i == 3))) {
+                      int[] tx = new int[77];
+                      System.arraycopy(t1, 0, tx, 0, 17);
+                      tx[j] += i;
+                      int[] dwx = new int[77];
+                      System.arraycopy(Secondary.auth_d(db1.clone(), tx, j), 0, dwx, 0, 77);
+                      for (int k = 1; k < 77; k++)
+                          if (dwx[k] == 4) {
+                              fb[j] = i;
+                          }
+                  }
+          for (int i = 1; i < 17; i++) {
+              if (fb[i] < fw[i])
+                  anl += 54;
+              if (fb[i] > fw[i])
+                  anl += -50;
+          }
+          for (int k = 41; k < 61; k++){
+              if ((dw1[k] == 2) & (db1[k] == 0))
+                  anl += 6;
+             if ((dw1[k] == 1) & (db1[k] == 0))
+                 anl += 1;
+             if ((db1[k] == 2) & (dw1[k] == 0))
+                  anl += -5;
+              if ((db1[k] == 1) & (dw1[k] == 0))
+                 anl += -1;
+      }
         return anl;
     }
 
@@ -188,7 +178,7 @@ import java.util.Map;
         return 0;
     }
 
-    public static int analyze(int[] db, int[] dw, int[] t, int depth, int maxDepth,int[] move) {
+    public static int analyze(int[] db, int[] dw, int[] t, int depth, int maxDepth,int[] move,int alfa) {
         int result;
         int lastMove = 0;
         if (depth == 0) {
@@ -211,7 +201,7 @@ import java.util.Map;
                 t[i]++;
                 StateInfo state = new StateInfo(db, dw, depth);
                 if (states.get(state)==null) {
-                    result = analyze(db.clone(), dw.clone(), t.clone(), depth + 1, maxDepth, move);
+                    result = analyze(db.clone(), dw.clone(), t.clone(), depth + 1, maxDepth, move, min);
                     states.put(state, result);
                 }
                 else
@@ -248,19 +238,53 @@ import java.util.Map;
                 t[i]++;
                 StateInfo state = new StateInfo(db, dw, depth);
                 if (states.get(state)==null) {
-                    result = analyze(db.clone(), dw.clone(), t.clone(), depth + 1, maxDepth, move);
+                    result = analyze(db.clone(), dw.clone(), t.clone(), depth + 1, maxDepth,move, max);
                     states.put(state, result);
                 }
                 else
                     result = states.get(state);
                 if (result > max)
                     max = result;
+                //alfa
+                    if ((alfa > max) && (depth<=3))
+                        return max;
             }
             return max;
         }
 
+        if (depth == 2) {
+            int min=10000;
+            for (int i = 1; i < 17; i++)
+                if (t[i]<4)
+                {
+                    if (lastMove!=0) {
+                        db = InfAuth(db, t, lastMove);
+                        t[lastMove] += -1;
+                    }
+                    lastMove=i;
+                    db = Secondary.auth_d(db.clone(), t, i);
+                    move[depth]=i;
+                    for (int k = 1; k < 77; k++)
+                        if (db[k] == 4)
+                            return -1000-depth;
+                    t[i]++;
+                    StateInfo state = new StateInfo(db, dw, depth);
+                    if (states.get(state)==null) {
+                        result = analyze(db.clone(), dw.clone(), t.clone(), depth + 1, maxDepth, move, min);
+                        states.put(state, result);
+                    }
+                    else
+                        result = states.get(state);
+                    if (result < min)
+                        min = result;
+                    //alfa
+                    if (alfa < min)
+                        return min;
+                }
+            return min;
+        }
 
-            if ((depth == 2) || (depth == 4) || (depth == 6)) {
+            if ((depth == 4) || (depth == 6)) {
                 int i = engine(db.clone(), dw.clone(), t.clone());
                 db = Secondary.auth_d(db.clone(), t, i);
                 move[depth]=i;
@@ -270,7 +294,7 @@ import java.util.Map;
                 t[i]++;
                 StateInfo state = new StateInfo(db, dw, depth);
                 if (states.get(state)==null) {
-                    result = analyze(db.clone(), dw.clone(), t.clone(), depth + 1, maxDepth, move);
+                    result = analyze(db.clone(), dw.clone(), t.clone(), depth + 1, maxDepth, move, 0);
                     states.put(state, result);
                 }
                 else
@@ -475,8 +499,8 @@ import java.util.Map;
     int depth;
 
    StateInfo(int[] db, int[] dw, int depth) {
-        this.db = db;
-        this.dw = dw;
+        this.db = db.clone();
+        this.dw = dw.clone();
         this.depth = depth;
     }
 
