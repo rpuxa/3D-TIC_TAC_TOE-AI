@@ -86,9 +86,13 @@ public class Game {
                 ex.printStackTrace();
             }
         } */
+
+
+      //    t[1]=1;t[4]=1;t[9]=1;t[12]=1; //задача на мат в 6 ходов
+       //  db[10]=1;db[5]=2;db[2]=2;
+
+
         while (true) {
-            t[1]=1;t[4]=1;t[9]=1;t[12]=1;
-            dw[10]=1;dw[5]=2;dw[2]=2;
            int playerColumn = readLimitedInt("номер столбца", first ? 0 : 1, 16);
            if (playerColumn!=0)
             auth(playerColumn, 0);

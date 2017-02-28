@@ -267,6 +267,11 @@ import java.util.Map;
                     min = result;
                     resultMove = i;
                 }
+                if (min<-999){
+                    System.out.println("Неминуемый мат в неколько ходов");
+                    states.clear();
+                    return resultMove;
+                }
             }
             states.clear();
             return resultMove;
@@ -306,8 +311,8 @@ import java.util.Map;
                 if (result > max)
                     max = result;
                 //alfa
-                 //   if ((alfa > max) && (depth<=3))
-                   //   return max;
+                    if ((alfa < max) && (depth<=3))
+                      return max;
             }
             return max;
         }
@@ -338,8 +343,8 @@ import java.util.Map;
                     if (result < min)
                         min = result;
                     //alfa
-                //   if (alfa < min)
-                 //      return min;
+                  if (alfa > min)
+                       return min;
                 }
             return min;
         }
