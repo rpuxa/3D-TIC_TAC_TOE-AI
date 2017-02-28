@@ -78,16 +78,19 @@ public class Game {
     }
 
     private void run(DifficultyLevel difficultyLevel) {
-        File file = new File("BookOf.positions");
+        /* File file = new File("BookOf.positions");
         if (file.exists()) {
             try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("BookOf.positions"))) {
                 pos = (Map<Pos, Integer>) ois.readObject();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-        }
+        } */
         while (true) {
+            t[1]=1;t[4]=1;t[9]=1;t[12]=1;
+            dw[10]=1;dw[5]=2;dw[2]=2;
            int playerColumn = readLimitedInt("номер столбца", first ? 0 : 1, 16);
+           if (playerColumn!=0)
             auth(playerColumn, 0);
             first = false;
             if (AiRun.win(db, dw) == 1) {
@@ -107,11 +110,11 @@ public class Game {
                 aiColumn = AiRun.engine(db.clone(), dw.clone(), t.clone());
                 auth(aiColumn, 1);
             } else {
-                int[] move = {0, 0, 0, 0, 0, 0};
+                int[] move = {0, 0, 0, 0, 0, 0,0,0,0};
                 Pos position = new Pos(db, dw);
                 if (pos.get(position) == null) {
                     System.out.println("Идет анализ ходов ...");
-                    aiColumn = (MAXIMAL == difficultyLevel) ? AiRun.analyze(db.clone(), dw.clone(), t.clone(), 0, 6, move,999999) : AiRun.analyze(db.clone(), dw.clone(), t.clone(), 0, 4, move,999999);
+                    aiColumn = (MAXIMAL == difficultyLevel) ? AiRun.analyze(db.clone(), dw.clone(), t.clone(), 0, 6,0,move) : AiRun.analyze(db.clone(), dw.clone(), t.clone(), 0, 4,0,move);
                     if (MAXIMAL == difficultyLevel)
                     pos.put(position, aiColumn);
                 } else
